@@ -1,7 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
              android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/openPlayMenuButton"
+        android:layout_width="150dp"
+        android:layout_height="0dp"
+        android:onClick="openPlayMenu"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="130dp"
+        tools:layout_editor_absoluteY="325dp" />
+
+    <Button
+        android:id="@+id/openProfileMenuButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:onClick="openProfileMenu"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="130dp"
+        tools:layout_editor_absoluteY="410dp" />
+
+    <Button
+        android:id="@+id/openRulesMenuButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:onClick="openCeditMenu"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="130dp"
+        tools:layout_editor_absoluteY="500dp" />
+
+    <Button
+        android:id="@+id/openCreditMenuButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:onClick="openCreditMenu"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="130dp"
+        tools:layout_editor_absoluteY="578dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
