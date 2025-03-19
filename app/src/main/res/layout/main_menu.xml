@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-             android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerInParent="true"
+        android:adjustViewBounds="true"
+        android:background="@drawable/space_background"
+        android:scaleType="fitXY"
+        android:scaleX="1.5"
+        android:scaleY="1.3"
+        tools:ignore="MissingConstraints" />
+
 
     <Button
         android:id="@+id/openPlayMenuButton"
@@ -10,8 +24,8 @@
         android:layout_height="0dp"
         android:onClick="openPlayMenu"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="130dp"
-        tools:layout_editor_absoluteY="325dp" />
+        tools:layout_editor_absoluteX="182dp"
+        tools:layout_editor_absoluteY="482dp" />
 
     <Button
         android:id="@+id/openProfileMenuButton"
@@ -19,8 +33,8 @@
         android:layout_height="wrap_content"
         android:onClick="openProfileMenu"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="130dp"
-        tools:layout_editor_absoluteY="410dp" />
+        tools:layout_editor_absoluteX="182dp"
+        tools:layout_editor_absoluteY="399dp" />
 
     <Button
         android:id="@+id/openRulesMenuButton"
@@ -28,8 +42,8 @@
         android:layout_height="wrap_content"
         android:onClick="openCeditMenu"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="130dp"
-        tools:layout_editor_absoluteY="500dp" />
+        tools:layout_editor_absoluteX="182dp"
+        tools:layout_editor_absoluteY="574dp" />
 
     <Button
         android:id="@+id/openCreditMenuButton"
@@ -37,9 +51,8 @@
         android:layout_height="wrap_content"
         android:onClick="openCreditMenu"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="130dp"
-        tools:layout_editor_absoluteY="578dp" />
-
+        tools:layout_editor_absoluteX="182dp"
+        tools:layout_editor_absoluteY="667dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
