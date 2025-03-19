@@ -12,15 +12,15 @@
     android:scaleX="1.5"
     android:scaleY="1.3">
 
-
     <ImageView
         android:id="@+id/logo"
         android:layout_width="623dp"
         android:layout_height="626dp"
-        app:srcCompat="@drawable/game_logo"
+        app:srcCompat="@drawable/jupiterlogo"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-106dp"
         tools:layout_editor_absoluteY="-76dp" />
+
 
     <ImageView
         android:id="@+id/astroidLink"
