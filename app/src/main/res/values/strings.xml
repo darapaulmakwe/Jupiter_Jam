@@ -3,4 +3,9 @@
     <string name="play_button">Play</string>
     <string name="profile_button">Profile</string>
     <string name="credit_button">Credits</string>
+    <string name="tutorial">Tutorial</string>
+    <string name="beginner">Beginner</string>
+    <string name="medium">Medium</string>
+    <string name="hard">Hard</string>
+    <string name="hint">Enter player name</string>
 </resources>
