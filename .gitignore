@@ -31,3 +31,6 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# MacOS metaData file for Finder settings
+.DS_Store
