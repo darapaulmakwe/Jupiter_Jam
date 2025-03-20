@@ -13,6 +13,7 @@
         android:theme="@style/Theme.JupiterJam"
         tools:targetApi="31">
         <activity
+            android:screenOrientation="nosensor"
             android:name=".MainMenu"
             android:exported="true">
             <intent-filter>
@@ -21,8 +22,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".PlayMenu"/>
-        <activity android:name=".ProfileMenu"/>
+
+        <activity
+            android:name=".PlayMenu"
+            android:screenOrientation="nosensor"/>
+        <activity
+            android:name=".ProfileMenu"
+            android:screenOrientation="nosensor"/>
 
     </application>
 
