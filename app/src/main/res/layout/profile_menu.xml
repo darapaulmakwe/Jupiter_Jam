@@ -4,17 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/profile_bg">
+    android:background="@drawable/profile_bg"
+    tools:context=".ProfileMenu">
 
     <EditText
         android:id="@+id/userInput"
         android:layout_width="206dp"
         android:layout_height="60dp"
+        android:layout_marginStart="102dp"
+        android:layout_marginTop="427dp"
+        android:layout_marginEnd="103dp"
+        android:layout_marginBottom="427dp"
         android:background="@drawable/edit_text_bg"
         android:gravity="center"
         android:hint="@string/hint"
-        tools:layout_editor_absoluteX="102dp"
-        tools:layout_editor_absoluteY="427dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/themesButton"
@@ -43,4 +50,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Back button -->
+    <ImageButton
+        android:id="@+id/revertButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="339dp"
+        android:layout_marginBottom="832dp"
+        android:backgroundTint="#00FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_revert"
+        android:onClick="revert"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

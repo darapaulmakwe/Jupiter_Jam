@@ -1,6 +1,8 @@
 package com.jupiterjam;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,4 +14,11 @@ public class PlayMenu extends AppCompatActivity {
 
         setContentView(R.layout.play_menu);
     }
+
+    public void revert(View myView){
+        startActivity(new Intent(this,MainMenu.class));
+        finish();
+
+    }
+
 }
