@@ -11,8 +11,14 @@ public class PlayMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.play_menu);
+
+        findViewById(R.id.beginnerButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(PlayMenu.this, GamePlay.class));
+            }
+        });
     }
 
     public void revert(View myView){

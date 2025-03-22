@@ -22,7 +22,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".GamePlay"
+            android:screenOrientation="nosensor"/>
         <activity
             android:name=".PlayMenu"
             android:screenOrientation="nosensor"/>
