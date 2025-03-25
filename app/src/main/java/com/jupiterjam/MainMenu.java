@@ -28,4 +28,9 @@ public class MainMenu extends AppCompatActivity  {
 
     }
 
+    public void openCredits(View myView){
+        setContentView(R.layout.credits);
+
+    }
+
 }

@@ -45,10 +45,11 @@
         app:layout_constraintTop_toBottomOf="@+id/openProfileMenuButton" />
 
     <Button
-        android:id="@+id/openCreditMenuButton"
+        android:id="@+id/openCreditsButton"
         android:layout_width="206dp"
         android:layout_height="55dp"
         android:layout_marginTop="12dp"
+        android:onClick="openCredits"
         android:text="@string/credit_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
