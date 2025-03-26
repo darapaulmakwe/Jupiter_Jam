@@ -20,17 +20,18 @@ public class MainMenu extends AppCompatActivity  {
     public void openPlayMenu(View myView){
         startActivity(new Intent(this,PlayMenu.class));
         finish();
-
     }
     public void openProfileMenu(View myView){
         startActivity(new Intent(this,ProfileMenu.class));
         finish();
-
     }
 
     public void openCredits(View myView){
         setContentView(R.layout.credits);
 
     }
+    public void revert(View myView){
+        setContentView(R.layout.main_menu);
 
+    }
 }
