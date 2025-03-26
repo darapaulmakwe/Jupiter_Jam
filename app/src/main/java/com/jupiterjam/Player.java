@@ -10,6 +10,5 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class Player extends AppCompatActivity {
 
-    public void 
 
 }
