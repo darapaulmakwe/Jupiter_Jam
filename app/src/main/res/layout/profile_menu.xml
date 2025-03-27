@@ -8,63 +8,84 @@
     tools:context=".ProfileMenu">
 
     <EditText
-        android:id="@+id/userInput"
+        android:id="@+id/usernameInput"
         android:layout_width="206dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="102dp"
-        android:layout_marginTop="427dp"
-        android:layout_marginEnd="103dp"
-        android:layout_marginBottom="427dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="324dp"
         android:background="@drawable/edit_text_bg"
         android:gravity="center"
-        android:hint="@string/hint"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:hint="@string/name_hint"
+        android:inputType="text"
+        android:onClick="changeUserName"
+        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/themesButton"
-        android:layout_width="206dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="124dp"
-        android:layout_marginTop="480dp"
-        android:layout_marginEnd="131dp"
-        android:layout_marginBottom="369dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- Layout buttons -->
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/themeButton"
         android:layout_width="206dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="102dp"
-        android:layout_marginTop="558dp"
-        android:layout_marginEnd="103dp"
-        android:layout_marginBottom="296dp"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/theme_button"
+        android:onClick="openThemeMenu"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameInput" />
+
+    <!-- TextViews -->
+
+    <TextView
+        android:id="@+id/playerWins"
+        android:layout_width="206dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="12dp"
+        android:background="#644E9E"
+        android:fadingEdge="vertical"
+        android:gravity="center"
+        android:text="@string/player_wins"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/themeButton" />
+
+    <TextView
+        android:id="@+id/playerLoses"
+        android:layout_width="206dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="12dp"
+        android:background="#644E9E"
+        android:gravity="center"
+        android:text="@string/player_loses"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/playerWins" />
 
     <!-- Back button -->
     <ImageButton
         android:id="@+id/revertButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="31dp"
-        android:layout_marginEnd="339dp"
-        android:layout_marginBottom="832dp"
+        android:layout_marginTop="24dp"
         android:backgroundTint="#00FFFFFF"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:contentDescription="@string/back_button"
+        android:onClick="revert"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/ic_menu_revert"
-        android:onClick="revert"/>
+        app:srcCompat="@android:drawable/ic_menu_revert" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
