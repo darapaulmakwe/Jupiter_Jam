@@ -7,5 +7,15 @@
     <string name="beginner">Beginner</string>
     <string name="medium">Medium</string>
     <string name="hard">Hard</string>
-    <string name="hint">Enter player name</string>
+    <string name="name_hint">Player Name</string>
+    <string name="theme_button">Theme</string>
+    <string name="player_wins">Wins: </string>
+    <string name="player_loses">Loses: </string>
+    <string name="back_button">BACK</string>
+    <string name="moon">Moon</string>
+    <string name="saturn">Saturn</string>
+    <string name="neptune">Neptune</string>
+    <string name="mars">Mars</string>
+    <string name="earth">Earth</string>
+    <string name="jupiter">Jupiter</string>
 </resources>
