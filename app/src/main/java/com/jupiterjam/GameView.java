@@ -11,8 +11,7 @@ public class GameView extends SurfaceView implements Runnable{
     private boolean isPlaying;
     private  int screenX, screenY;
     private Background background1, background2;
-    private SpaceShipMovement userSpaceShip;
-    private float screenRatioX, screenRatioY;
+    public static float screenRatioX, screenRatioY;
     private Paint paint;
     public GameView(Context context, int screenX, int screenY){
         super(context);
@@ -20,19 +19,16 @@ public class GameView extends SurfaceView implements Runnable{
         this.screenX = screenX;
         this.screenY = screenY;
 
-        screenRatioX = 1920 / screenX;
-        screenRatioY = 1080 / screenY;
+        screenRatioX = 1920f / screenX;
+        screenRatioY = 1080f / screenY;
 
 
         background1 = new Background(screenX, screenY, getResources());
         background2 = new Background(screenX,screenY, getResources());
 
-        userSpaceShip = new SpaceShipMovement(screenX,screenY, getResources());
-
         paint = new Paint();
 
         background2.x = screenX;
-        userSpaceShip.x = screenX;
     }
 
     @Override
@@ -40,7 +36,6 @@ public class GameView extends SurfaceView implements Runnable{
         while(isPlaying){
 
             update();
-            updateShip();
             draw();
             sleep();
 
@@ -58,16 +53,6 @@ public class GameView extends SurfaceView implements Runnable{
         }
 
     }
-    private void updateShip(){
-        userSpaceShip.x -= 10 * screenRatioX;
-
-        if(userSpaceShip.x + userSpaceShip.userShip.getWidth() < 0){
-            userSpaceShip.x += 10 * screenRatioX;
-            if(userSpaceShip.x + userSpaceShip.userShip.getWidth() > 10){
-                userSpaceShip.x = screenX;
-            }
-        }
-    }
 
 
     private void draw(){
@@ -76,7 +61,6 @@ public class GameView extends SurfaceView implements Runnable{
               Canvas canvas = getHolder().lockCanvas();
               canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
               canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
-              canvas.drawBitmap(userSpaceShip.userShip, userSpaceShip.x, userSpaceShip.y, paint);
 
 
               getHolder().unlockCanvasAndPost(canvas);
