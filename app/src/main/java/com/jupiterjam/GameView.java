@@ -11,6 +11,7 @@ public class GameView extends SurfaceView implements Runnable{
     private boolean isPlaying;
     private  int screenX, screenY;
     private Background background1, background2;
+    private Player player;
     public static float screenRatioX, screenRatioY;
     private Paint paint;
     public GameView(Context context, int screenX, int screenY){
@@ -26,6 +27,8 @@ public class GameView extends SurfaceView implements Runnable{
         background1 = new Background(screenX, screenY, getResources());
         background2 = new Background(screenX,screenY, getResources());
 
+        player = new Player(screenY, getResources());
+
         paint = new Paint();
 
         background2.x = screenX;
@@ -34,11 +37,9 @@ public class GameView extends SurfaceView implements Runnable{
     @Override
     public void run() {
         while(isPlaying){
-
             update();
             draw();
             sleep();
-
         }
     }
     private void update(){
@@ -62,7 +63,7 @@ public class GameView extends SurfaceView implements Runnable{
               canvas.drawBitmap(background1.background, background1.x, background1.y, paint);
               canvas.drawBitmap(background2.background, background2.x, background2.y, paint);
 
-
+              canvas.drawBitmap(player.getFlight(), player.x, player.y, paint);
               getHolder().unlockCanvasAndPost(canvas);
         }
 
