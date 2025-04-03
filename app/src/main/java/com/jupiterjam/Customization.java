@@ -6,14 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Customization extends AppCompatActivity {
     public String userName;
     public String themeName;
-    public String themeImage;
+    public int themeImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
     }
 
-    public Customization(String userName, String themeName, String themeImage){
+    public Customization(String userName, String themeName, int themeImage){
         this.userName = userName;
         this.themeName = themeName;
         this.themeImage = themeImage;
@@ -28,14 +28,14 @@ public class Customization extends AppCompatActivity {
 
     public void setTheme(String theme){
         this.themeName = theme;
-        this.themeImage = theme +"_ship.png";
+        this.themeImage = R.drawable.jupiter_ship;
     }
 
     public String getThemeName(){
-        return this.themeName;
+        return this.themeName.toUpperCase();
     }
 
-    public String getThemeImage(){
+    public int getThemeImage(){
         return this.themeImage;
     }
 

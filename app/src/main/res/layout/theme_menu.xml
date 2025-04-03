@@ -8,7 +8,16 @@
     tools:context=".ProfileMenu">
 
     <!-- (Displays current theme image)  -->
-
+    <ImageView
+        android:id="@+id/ship"
+        android:layout_width="199dp"
+        android:layout_height="356dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.29"
+        app:srcCompat="@drawable/jupiter_ship" />
 
     <!-- Text View (Displays current theme name) -->
     <TextView
@@ -29,12 +38,11 @@
 
     <!-- Layout buttons (Theme selectors) -->
 
-    <!-- Back button -->
-
     <Button
         android:id="@+id/themeButton1"
         android:layout_width="120dp"
         android:layout_height="80dp"
+        android:backgroundTint="#E23624"
         android:onClick="changeTheme"
         android:text="@string/jupiter"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -48,6 +56,7 @@
         android:id="@+id/themeButton2"
         android:layout_width="120dp"
         android:layout_height="80dp"
+        android:backgroundTint="#2ABD2F"
         android:onClick="changeTheme"
         android:text="@string/earth"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -61,6 +70,7 @@
         android:id="@+id/themeButton3"
         android:layout_width="120dp"
         android:layout_height="80dp"
+        android:backgroundTint="#DB1616"
         android:onClick="changeTheme"
         android:text="@string/mars"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -74,6 +84,7 @@
         android:id="@+id/themeButton4"
         android:layout_width="120dp"
         android:layout_height="80dp"
+        android:backgroundTint="#1222DE"
         android:onClick="changeTheme"
         android:text="@string/neptune"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -89,6 +100,7 @@
         android:layout_height="80dp"
         android:layout_marginTop="15dp"
         android:layout_marginEnd="4dp"
+        android:backgroundTint="#E4D97A"
         android:onClick="changeTheme"
         android:text="@string/saturn"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -102,6 +114,7 @@
         android:id="@+id/themeButton6"
         android:layout_width="120dp"
         android:layout_height="80dp"
+        android:backgroundTint="#736C6C"
         android:onClick="changeTheme"
         android:text="@string/moon"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -110,6 +123,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.956" />
+
+    <!-- Back button -->
 
     <ImageButton
         android:id="@+id/revertButton"
@@ -124,7 +139,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_menu_revert" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
