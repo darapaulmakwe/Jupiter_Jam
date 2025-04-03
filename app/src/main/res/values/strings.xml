@@ -18,4 +18,7 @@
     <string name="mars">Mars</string>
     <string name="earth">Earth</string>
     <string name="jupiter">Jupiter</string>
+    <string name="return_to_mm"> Return to Main Menu</string>
+    <string name="you_won">You Won!</string>
+    <string name="game_over">Game Over</string>
 </resources>
