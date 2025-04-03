@@ -29,6 +29,9 @@
         <activity
             android:name=".ProfileMenu"
             android:screenOrientation="nosensor"/>
+        <activity
+            android:name=".GamePlay"
+            android:screenOrientation="nosensor"/>
 
     </application>
 

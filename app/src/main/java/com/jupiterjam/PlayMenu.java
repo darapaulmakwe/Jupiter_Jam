@@ -21,4 +21,9 @@ public class PlayMenu extends AppCompatActivity {
 
     }
 
+    public void openBeginnerTab(View myView){
+        startActivity(new Intent(this,GamePlay.class));
+        finish();
+    }
+
 }
