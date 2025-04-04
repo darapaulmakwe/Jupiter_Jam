@@ -21,4 +21,7 @@
     <string name="return_to_mm"> Return to Main Menu</string>
     <string name="you_won">You Won!</string>
     <string name="game_over">Game Over</string>
+    <string name="pause_Menu">Pause Menu</string>
+    <string name="resume">Resume</string>
+    <string name="main_menu">Main menu</string>
 </resources>
