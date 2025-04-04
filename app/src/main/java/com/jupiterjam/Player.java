@@ -5,7 +5,7 @@ public class Player {
     private ImageView spriteView; // The visual representation
 
     // Movement parameters
-    private float tiltSensitivityX = 50f;
+    private float tiltSensitivityX = 5f;
     private float maxHorizontalDistance = 300f;
     private float horizontalMoveThreshold = 0.3f;
 

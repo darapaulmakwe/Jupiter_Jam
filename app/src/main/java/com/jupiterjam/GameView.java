@@ -7,6 +7,7 @@ public class GameView extends SurfaceView implements Runnable{
 
     private Thread thread;
     private boolean isPlaying;
+    private Enemy enemy;
     public GameView(Context context){
         super(context);
     }

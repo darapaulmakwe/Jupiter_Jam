@@ -5,6 +5,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,10 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 public class GamePlay extends AppCompatActivity {
     // Define Player Object
     private Player player;
+    private Enemy enemy;
 
     //Define sensor variables
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
+
+    private Handler enemyHandler = new Handler();
+    private Runnable enemyRunnable;
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
@@ -36,6 +41,7 @@ public class GamePlay extends AppCompatActivity {
         }
     };
 
+
  @Override
     protected void onCreate(Bundle savedInstanceState){
      super.onCreate(savedInstanceState);
@@ -47,7 +53,20 @@ public class GamePlay extends AppCompatActivity {
 
      // Initialize player sprite
      ImageView playerSprite = findViewById(R.id.rocket);
+     ImageView enemySprite = findViewById(R.id.enemy);
      player = new Player(playerSprite);
+     enemy =  new Enemy(enemySprite,400f,-300f);
+     enemyRunnable = new Runnable() {
+         @Override
+         public void run() {
+             if (enemy != null){
+                 enemy.updateEnemyPosition();
+             }
+             enemyHandler.postDelayed(this,17); // need to edit the speed
+         }
+     };
+
+
  }
 
     //Generate a sensor event listener for the application
@@ -55,11 +74,14 @@ public class GamePlay extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(sensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        enemyHandler.post(enemyRunnable);
     }
 
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(sensorEventListener);
+        enemyHandler.removeCallbacks(enemyRunnable);
+
     }
 
 }

@@ -17,4 +17,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/jupiter_ship" />
+
+    <ImageView
+        android:id="@+id/enemy"
+        android:layout_width="146dp"
+        android:layout_height="140dp"
+        android:rotation="180"
+        tools:layout_editor_absoluteX="132dp"
+        tools:layout_editor_absoluteY="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/jupiter_ship"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
