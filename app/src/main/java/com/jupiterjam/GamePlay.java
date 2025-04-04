@@ -49,40 +49,40 @@ public class GamePlay extends AppCompatActivity {
         }
     };
 
- @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState){
-     super.onCreate(savedInstanceState);
-     setContentView(R.layout.gameplay);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.gameplay);
 
-     // Initialize the sensor manager and actual sensor
-     mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-     mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        // Initialize the sensor manager and actual sensor
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-     // Initialize player sprite
-     ImageView playerSprite = findViewById(R.id.rocket);
-     player = new Player(playerSprite);
+        // Initialize player sprite
+        ImageView playerSprite = findViewById(R.id.rocket);
+        player = new Player(playerSprite);
 
-     //Initialize pause menu buttons
-     pauseMenu = findViewById(R.id.pauseMenu);
-     resumeButton = findViewById(R.id.resumeButton);
-     homeButton = findViewById(R.id.homeButton);
-     pauseBtn = findViewById(R.id.pauseButton);
-     pauseMenutext = findViewById(R.id.textView);
+        //Initialize pause menu buttons
+        pauseMenu = findViewById(R.id.pauseMenu);
+        resumeButton = findViewById(R.id.resumeButton);
+        homeButton = findViewById(R.id.homeButton);
+        pauseBtn = findViewById(R.id.pauseButton);
+        pauseMenutext = findViewById(R.id.textView);
 
-     pauseBtn.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-             pauseGame();
-         }
-     });
-     resumeButton.setOnClickListener(new View.OnClickListener() {
-         @Override
-         public void onClick(View v) {
-             resumeGame();
-         }
-     });
+        pauseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pauseGame();
+            }
+        });
+        resumeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resumeGame();
+            }
+        });
 
- }
+    }
 
     //Generate a sensor event listener for the application
     //The sensor manager uses the sensorEventListener to track any changes in the accelerometer
