@@ -40,8 +40,8 @@
 
     <Button
         android:id="@+id/themeButton1"
-        android:layout_width="120dp"
-        android:layout_height="80dp"
+        android:layout_width="121dp"
+        android:layout_height="84dp"
         android:backgroundTint="#E23624"
         android:onClick="changeTheme"
         android:text="@string/jupiter"
