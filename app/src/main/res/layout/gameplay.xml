@@ -31,6 +31,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/jupiter_ship" />
 
+
+    <FrameLayout
+        android:id="@+id/asteroidLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- This FrameLayout will hold dynamically added asteroids (ImageViews). -->
+
+    </FrameLayout>
+
     <ImageButton
         android:id="@+id/pauseButton"
         android:layout_width="0dp"
@@ -40,7 +50,7 @@
         android:backgroundTint="#00FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_play" />
+        app:srcCompat="@android:drawable/ic_media_pause" />
 
     <ImageView
         android:id="@+id/pauseMenu"
@@ -89,10 +99,10 @@
         android:layout_height="58dp"
         android:layout_marginTop="480dp"
         android:backgroundTint="#C53333"
-        android:contentDescription="@string/back_button"
-        android:onClick="revertToMainMenu"
         android:text="@string/main_menu"
         android:visibility="gone"
+        android:contentDescription="@string/back_button"
+        android:onClick="revertToMainMenu"
         app:layout_constraintEnd_toEndOf="@+id/pauseMenu"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="@+id/pauseMenu"

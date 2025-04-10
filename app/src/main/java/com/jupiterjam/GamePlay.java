@@ -10,11 +10,15 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Random;
 
 public class GamePlay extends AppCompatActivity {
     // Define Player Object
@@ -40,6 +44,12 @@ public class GamePlay extends AppCompatActivity {
 
     private Handler enemyHandler = new Handler();
     private Runnable enemyRunnable;
+
+    // Define asteroid items
+    private FrameLayout asteroidLayout; // Container for asteroids
+    private ArrayList<Asteroid> asteroids; // List to hold active asteroids
+    private Handler handler; // Handler for timing and updates
+    private Random random;
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
@@ -88,6 +98,15 @@ public class GamePlay extends AppCompatActivity {
              enemyHandler.postDelayed(this,17); // need to edit the speed
          }
      };
+
+     asteroidLayout = (FrameLayout) findViewById(R.id.asteroidLayout);
+     asteroids = new ArrayList<>();
+     handler = new Handler();
+     random = new Random();
+
+     // Start spawning asteroids
+     spawnAsteroids();
+
      //Initialize pause menu buttons
      pauseMenu = findViewById(R.id.pauseMenu);
      resumeButton = findViewById(R.id.resumeButton);
@@ -107,9 +126,34 @@ public class GamePlay extends AppCompatActivity {
              resumeGame();
          }
      });
-
-
  }
+
+    // Method to spawn new asteroids at random intervals
+    private void spawnAsteroids() {
+        final int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        final int screenHeight = getResources().getDisplayMetrics().heightPixels;
+
+        // Runnable to spawn new asteroids every 2-5 seconds
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Create a new asteroid and add it to the layout
+                Asteroid newAsteroid = new Asteroid(asteroidLayout, screenWidth, screenHeight);
+                asteroids.add(newAsteroid);
+
+                // Clean up destroyed asteroids
+                for (int i = 0; i < asteroids.size(); i++) {
+                    if (asteroids.get(i).isDestroyed()) {
+                        asteroids.remove(i);
+                        i--;
+                    }
+                }
+
+                // Schedule the next asteroid spawn
+                handler.postDelayed(this, random.nextInt(3000) + 2000); // Random interval (2 to 5 seconds)
+            }
+        }, random.nextInt(3000) + 2000); // Initial delay (2 to 5 seconds)
+    }
 
     //Generate a sensor event listener for the application
     //The sensor manager uses the sensorEventListener to track any changes in the accelerometer
