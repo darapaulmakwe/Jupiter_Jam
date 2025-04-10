@@ -48,7 +48,7 @@ public class GamePlay extends AppCompatActivity {
     // Define asteroid items
     private FrameLayout asteroidLayout; // Container for asteroids
     private ArrayList<Asteroid> asteroids; // List to hold active asteroids
-    private Handler handler; // Handler for timing and updates
+    private Handler asteroidHandler; // Handler for timing and updates
     private Random random;
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -101,7 +101,7 @@ public class GamePlay extends AppCompatActivity {
 
      asteroidLayout = (FrameLayout) findViewById(R.id.asteroidLayout);
      asteroids = new ArrayList<>();
-     handler = new Handler();
+     asteroidHandler = new Handler();
      random = new Random();
 
      // Start spawning asteroids
@@ -134,7 +134,7 @@ public class GamePlay extends AppCompatActivity {
         final int screenHeight = getResources().getDisplayMetrics().heightPixels;
 
         // Runnable to spawn new asteroids every 2-5 seconds
-        handler.postDelayed(new Runnable() {
+        asteroidHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 // Create a new asteroid and add it to the layout
@@ -150,7 +150,7 @@ public class GamePlay extends AppCompatActivity {
                 }
 
                 // Schedule the next asteroid spawn
-                handler.postDelayed(this, random.nextInt(3000) + 2000); // Random interval (2 to 5 seconds)
+                asteroidHandler.postDelayed(this, random.nextInt(3000) + 2000); // Random interval (2 to 5 seconds)
             }
         }, random.nextInt(3000) + 2000); // Initial delay (2 to 5 seconds)
     }

@@ -15,8 +15,8 @@ public class Asteroid {
     private FrameLayout asteroidLayout;
     private Context context;
 
-    public int width = 225;
-    public int height = 163; // Dimensions of the asteroid
+    public int width = 90;
+    public int height = 65; // Dimensions of the asteroid
 
     private int health;
     private boolean isDestroyed = false;
@@ -32,7 +32,7 @@ public class Asteroid {
         // Set initial random position for the asteroid
         int startX = screenWidth; // Start off-screen (right side)
         int endX = -width;
-        int startY = new Random().nextInt(screenHeight - height) + height;
+        int startY = new Random().nextInt((screenHeight - 700 - 700 + 1)+ 700;
 
         // Create the ImageView for the asteroid
         asteroidView = new ImageView(context);
