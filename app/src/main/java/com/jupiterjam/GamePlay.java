@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
@@ -24,9 +25,14 @@ public class GamePlay extends AppCompatActivity {
     private boolean isPaused = false;
     ImageView pauseMenu;
     ImageButton pauseBtn;
-    TextView pauseMenutext;
+    TextView pauseMenuText;
     public Button resumeButton;
     private Button homeButton;
+
+    // Countdown elements
+    private CountDownTimer countdownTimer;
+    ImageView countdownTint;
+    TextView countdownText;
 
     //Define sensor variables
     private SensorManager mSensorManager;
@@ -54,11 +60,15 @@ public class GamePlay extends AppCompatActivity {
         }
     };
 
-
- @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState){
      super.onCreate(savedInstanceState);
      setContentView(R.layout.gameplay);
+
+     // Initialize countdown
+     countdownTint = findViewById(R.id.countdownTint);
+     countdownText = findViewById(R.id.countdownInt);
+     startCountdown();
 
      // Initialize the sensor manager and actual sensor
      mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -83,7 +93,7 @@ public class GamePlay extends AppCompatActivity {
      resumeButton = findViewById(R.id.resumeButton);
      homeButton = findViewById(R.id.homeButton);
      pauseBtn = findViewById(R.id.pauseButton);
-     pauseMenutext = findViewById(R.id.textView);
+     pauseMenuText = findViewById(R.id.textView);
 
      pauseBtn.setOnClickListener(new View.OnClickListener() {
          @Override
@@ -116,12 +126,32 @@ public class GamePlay extends AppCompatActivity {
 
     }
 
+    public void startCountdown() {
+         countdownTimer = new CountDownTimer(4000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                if (millisUntilFinished / 1000 == 0) {
+                    countdownText.setText("Go!");
+                } else {
+                    countdownText.setText(String.valueOf(millisUntilFinished / 1000));
+                }
+                onPause();
+            }
+
+            public void onFinish() {
+                countdownText.setVisibility(View.GONE);
+                countdownTint.setVisibility(View.GONE);
+                onResume();
+            }
+        };countdownTimer.start();
+    }
+
     //Toggle functions for Pause Menu
     public void resumeGame(){
         pauseMenu.setVisibility(View.GONE);
         resumeButton.setVisibility(View.GONE);
         homeButton.setVisibility(View.GONE);
-        pauseMenutext.setVisibility(View.GONE);
+        pauseMenuText.setVisibility(View.GONE);
         onResume();
         isPaused = false;
     }
@@ -129,7 +159,7 @@ public class GamePlay extends AppCompatActivity {
         pauseMenu.setVisibility(View.VISIBLE);
         resumeButton.setVisibility(View.VISIBLE);
         homeButton.setVisibility(View.VISIBLE);
-        pauseMenutext.setVisibility(View.VISIBLE);
+        pauseMenuText.setVisibility(View.VISIBLE);
         onPause();
         isPaused = true;
     }
