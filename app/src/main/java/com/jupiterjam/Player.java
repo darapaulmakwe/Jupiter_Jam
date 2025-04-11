@@ -6,7 +6,7 @@ public class Player {
     private ImageView bulletView; //The visual representation of the bullet
 
     // Movement parameters
-    private float tiltSensitivityX = 5f;
+    private float tiltSensitivityX = 30f;
     private float maxHorizontalDistance = 300f;
     private float horizontalMoveThreshold = 0.3f;
 

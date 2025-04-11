@@ -77,7 +77,7 @@
         android:id="@+id/countdownInt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="3"
+        android:text=""
         android:textColor="@color/white"
         android:textSize="150dp"
         android:visibility="visible"

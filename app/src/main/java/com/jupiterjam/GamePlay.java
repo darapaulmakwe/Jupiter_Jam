@@ -216,6 +216,9 @@ public class GamePlay extends AppCompatActivity {
         for (int i = 0; i < asteroids.size(); i++) {
             asteroids.get(i).pauseAsteroid();
         }
+
+        // Pauses bullet
+
     }
 
     public void startCountdown() {
