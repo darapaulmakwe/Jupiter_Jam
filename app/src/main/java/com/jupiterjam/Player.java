@@ -75,6 +75,8 @@ public class Player {
         Bullet bullet = new Bullet(bulletView, xPos, yPos);
         bullet.startMovement();
     }
+    private void spawnBullet(float xPos, float yPos){
+    }
     /**
      * Resets the initialization flag for smoothing.
      */
@@ -90,5 +92,9 @@ public class Player {
 
     public void setMaxHorizontalDistance(float distance) {
         this.maxHorizontalDistance = distance;
+    }
+
+    public void setBulletView(ImageView bulletView){
+        this.bulletView = bulletView;
     }
 }

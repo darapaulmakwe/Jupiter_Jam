@@ -8,15 +8,19 @@ import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Random;
 
@@ -85,15 +89,40 @@ public class GamePlay extends AppCompatActivity {
      mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
      mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+     ConstraintLayout gameLayout = findViewById(R.id.gameLayout);
      // Initialize player sprite
      ImageView playerSprite = findViewById(R.id.rocket);
+
      ImageView bulletSprite = findViewById(R.id.bullet);
+     bulletSprite.setVisibility(View.INVISIBLE);
+
      ImageView enemySprite = findViewById(R.id.enemy);
      player = new Player(playerSprite, bulletSprite);
-     playerSprite.setOnClickListener(new View.OnClickListener() {
+     gameLayout.setOnClickListener(new View.OnClickListener() {
 
          @Override
          public void onClick(View v) {
+             ImageView bullet = new ImageView(GamePlay.this);
+             bullet.setVisibility(View.INVISIBLE);
+             bullet.setImageResource(R.drawable.laser_bullet);
+
+             int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                     114, getResources().getDisplayMetrics());
+             //Layout parameters for the bullet
+             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(size, size);
+
+             //Sets constraints
+             layoutParams.bottomToBottom = R.id.asteroidLayout;
+             layoutParams.topToTop = R.id.asteroidLayout;
+             layoutParams.startToStart = R.id.asteroidLayout;
+             layoutParams.horizontalBias = 0.498f;
+
+             // Apply to image view
+             bullet.setLayoutParams(layoutParams);
+
+             // Apply to the layout
+             gameLayout.addView(bullet);
+             player.setBulletView(bullet);
              player.shoot();
          }
      });

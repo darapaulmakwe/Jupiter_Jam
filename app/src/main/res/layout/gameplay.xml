@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gameplaybg"
@@ -72,6 +73,19 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_media_pause" />
 
+    <TextView
+        android:id="@+id/countdownInt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="3"
+        android:textColor="@color/white"
+        android:textSize="150dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/rocket"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enemy" />
+
     <ImageView
         android:id="@+id/pauseMenu"
         android:layout_width="298dp"
@@ -119,27 +133,14 @@
         android:layout_height="58dp"
         android:layout_marginTop="480dp"
         android:backgroundTint="#C53333"
-        android:text="@string/main_menu"
-        android:visibility="gone"
         android:contentDescription="@string/back_button"
         android:onClick="revertToMainMenu"
+        android:text="@string/main_menu"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="@+id/pauseMenu"
         app:layout_constraintHorizontal_bias="0.512"
         app:layout_constraintStart_toStartOf="@+id/pauseMenu"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/countdownInt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="360dp"
-        android:text="3"
-        android:textColor="@color/white"
-        android:textSize="150dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/countdownTint"
-        android:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
