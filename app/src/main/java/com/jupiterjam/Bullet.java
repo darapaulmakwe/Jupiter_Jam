@@ -1,5 +1,6 @@
 package com.jupiterjam;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ImageView;
 
 public class Bullet {
@@ -16,10 +17,12 @@ public class Bullet {
         this.spriteView = spriteView;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
-        spriteView.setVisibility(ImageView.VISIBLE);
         isBulletActive = true;
     }
     public void startMovement(){
+        spriteView.setX(xPosition);
+        spriteView.setY(yPosition);
+        spriteView.setVisibility(View.VISIBLE);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -48,12 +51,5 @@ public class Bullet {
 
 //For player
 /*
-public void shoot(){
-        // Initialize bullet sprite
-        ImageView bulletSprite = findViewById(R.id.bullet);
-        float xPosition = this.spriteView.getX();
-        float yPosition = this.spriteView.getY();
-        Bullet bullet = new Bullet(bulletSprite, xPosition, yPosition);
-        bullet.startMovement();
-    }
+
 */
