@@ -91,6 +91,7 @@ public class GamePlay extends AppCompatActivity {
      ImageView enemySprite = findViewById(R.id.enemy);
      player = new Player(playerSprite, bulletSprite);
      playerSprite.setOnClickListener(new View.OnClickListener() {
+
          @Override
          public void onClick(View v) {
              player.shoot();
