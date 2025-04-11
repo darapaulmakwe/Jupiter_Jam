@@ -3,6 +3,7 @@ package com.jupiterjam;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.FrameLayout;
 
@@ -15,8 +16,8 @@ public class Asteroid {
     private FrameLayout asteroidLayout;
     private Context context;
 
-    public int width = 90;
-    public int height = 65; // Dimensions of the asteroid
+    public int width = 225;
+    public int height = 163; // Dimensions of the asteroid
 
     private int health;
     private boolean isDestroyed = false;
@@ -32,18 +33,23 @@ public class Asteroid {
         // Set initial random position for the asteroid
         int startX = screenWidth; // Start off-screen (right side)
         int endX = -width;
-        int startY = new Random().nextInt((screenHeight - 700 - 700 + 1)+ 700;
+
+        int minY = 600; // accounting for player and cpu area
+        int maxY = screenHeight - minY;
+
+        int startY = new Random().nextInt(maxY-minY+1) + minY;
 
         // Create the ImageView for the asteroid
         asteroidView = new ImageView(context);
 
-        // 10% chance of being a special asteroid
-        isPowerUp = new Random().nextInt(10) == 0;
+        int chanceOfPowerUp = 10; // 10% chance to be a power-up asteroid
+        isPowerUp = new Random().nextInt(chanceOfPowerUp) == 0;
 
         // Set image and health based on type
         if (isPowerUp) {
+            int numberOfPowerUps = 3;
             // Random int to determine what power up spawns. Even chance between all power-up types
-            powerUp = new Random().nextInt(3);
+            powerUp = new Random().nextInt(numberOfPowerUps);
             switch(powerUp) {
                 case 0:
                     asteroidView.setImageResource(R.drawable.bullet_asteroid);
@@ -55,11 +61,11 @@ public class Asteroid {
                     asteroidView.setImageResource(R.drawable.health_asteroid);
                     break;
             }
-            health = 5;
+            health = 3;
         }
         else {
             asteroidView.setImageResource(R.drawable.plain_asteroid);
-            health = new Random().nextInt(3) + 1; // Health 1 to 3
+            health = 1;
         }
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, height);
@@ -70,8 +76,10 @@ public class Asteroid {
         // Add to layout
         asteroidLayout.addView(asteroidView);
 
-        // Random speed: 5 to 10 seconds to cross the screen
-        int duration = new Random().nextInt(5000) + 5000;
+        int minDuration = 5000;
+        int maxDuration = 12000;
+        // Random speed: 5 to 12 seconds to cross the screen
+        int duration = new Random().nextInt(minDuration) + (maxDuration - minDuration);
 
         // Animate X position from right to left
         animator = ObjectAnimator.ofFloat(asteroidView, "x", startX, endX);
@@ -129,12 +137,28 @@ public class Asteroid {
         isDestroyed = true;
         if (animator != null && animator.isRunning()) animator.cancel();
 
-        //explode(); TODO: implement explosion after asteroid is destroyed
-        asteroidLayout.removeView(asteroidView);
+        explode();
 
         if (wasKilledByPlayer && isPowerUp) {
             triggerPowerUp(powerUp);
         }
+    }
+    // Display explosion and remove the view after a delay
+    private void explode(){
+        int asteroidRemoveDelay = 1000;
+        asteroidView.setImageResource(R.drawable.explosion);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                asteroidLayout.removeView(asteroidView);
+            }
+        }, asteroidRemoveDelay);
+    }
+    public void pauseAsteroid(){
+        animator.pause();
+    }
+    public void resumeAsteroid(){
+        animator.resume();
     }
 
     // Functionality of each power up to be applied.
