@@ -3,6 +3,7 @@ import android.widget.ImageView;
 public class Player {
     private int health = 100;
     private ImageView spriteView; // The visual representation
+    private ImageView bulletView; //The visual representation of the bullet
 
     // Movement parameters
     private float tiltSensitivityX = 5f;
@@ -15,8 +16,9 @@ public class Player {
     private static final float ALPHA = 0.15f; // Smoothing factor
 
     // Constructor
-    public Player(ImageView spriteView) {
+    public Player(ImageView spriteView, ImageView bulletView) {
         this.spriteView = spriteView;
+        this.bulletView = bulletView;
         // Initialize smoothing flag (or could be done in a reset method)
         this.hasSmoothedXInitialized = false;
     }
@@ -67,7 +69,11 @@ public class Player {
         }
     }
     public void shoot(){
+        float xPos = spriteView.getX();
+        float yPos = spriteView.getY();
 
+        Bullet bullet = new Bullet(bulletView, xPos, yPos);
+        bullet.startMovement();
     }
     /**
      * Resets the initialization flag for smoothing.
