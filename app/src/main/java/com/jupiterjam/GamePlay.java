@@ -206,6 +206,8 @@ public class GamePlay extends AppCompatActivity {
         for (int i = 0; i < asteroids.size(); i++) {
             asteroids.get(i).resumeAsteroid();
         }
+        // resumes enemy shooting
+        enemy.startShooting();
     }
 
     protected void onPause() {
@@ -218,8 +220,8 @@ public class GamePlay extends AppCompatActivity {
         for (int i = 0; i < asteroids.size(); i++) {
             asteroids.get(i).pauseAsteroid();
         }
-
-        // Pauses bullet
+        // Pauses enemy shooting
+        enemy.stopShooting();
 
     }
 
