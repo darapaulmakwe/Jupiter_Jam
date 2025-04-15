@@ -1,4 +1,5 @@
 package com.jupiterjam;
+import android.view.View;
 import android.widget.ImageView;
 public class Player {
     private int health = 100;
@@ -14,6 +15,20 @@ public class Player {
     private float smoothedX = 0f;
     private boolean hasSmoothedXInitialized = false;
     private static final float ALPHA = 0.15f; // Smoothing factor
+
+    public float getX(){
+        return spriteView.getX();
+
+    }
+    public float getY(){
+        return spriteView.getY();
+    }
+    public float getHeight(){
+        return spriteView.getHeight();
+    }
+    public float getWidth(){
+        return spriteView.getWidth();
+    }
 
     // Constructor
     public Player(ImageView spriteView, ImageView bulletView) {
@@ -58,22 +73,13 @@ public class Player {
         // Apply translation to the Player's ImageView
         this.spriteView.setTranslationX(horizontalTranslation);
     }
-    public boolean takeDamage(int amount){
-        if (health <= amount){
-            health = 0;
-            return false;
-        }
-        else {
-            health -= amount;
-            return true;
-        }
-    }
-    public void shoot(){
+    public Bullet shoot(){
         float xPos = spriteView.getX();
         float yPos = spriteView.getY();
 
         Bullet bullet = new Bullet(bulletView, xPos, yPos,-20);
         bullet.startMovement();
+        return bullet;
     }
     private void spawnBullet(float xPos, float yPos){
     }
@@ -96,5 +102,14 @@ public class Player {
 
     public void setBulletView(ImageView bulletView){
         this.bulletView = bulletView;
+    }
+
+    public void gotHit(){
+        health -= 100;
+
+        if(health <= 0){
+            spriteView.setVisibility(View.INVISIBLE);
+        }
+
     }
 }

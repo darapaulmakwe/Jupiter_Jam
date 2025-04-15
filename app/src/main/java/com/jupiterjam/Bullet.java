@@ -33,10 +33,11 @@ public class Bullet {
                     spriteView.setY(yPosition);
 
                     // Check for conditions to stop the bullet (e.g., hitting a target, going off-screen)
-                    if (yPosition < 0) { // Example: Bullet went off the top screen
+                    if (yPosition < 0 || yPosition > 2000) { // Example: Bullet went off the top screen
                         stopBullet();
                         return;
                     }
+
 
                     // Schedule the next update
                     handler.postDelayed(this, 1000 / frameRate);
@@ -47,6 +48,23 @@ public class Bullet {
     public void stopBullet(){
         isBulletActive = false;
         spriteView.setVisibility(ImageView.GONE);
+    }
+
+    public boolean hitTarget(float positionX, float positionY, float targetHeight, float targetWidth){
+        float bulletX = spriteView.getX();
+        float bulletY = spriteView.getY();
+        float bulletHeight = spriteView.getHeight();
+        float bulletWidth = spriteView.getWidth();
+
+        return bulletX < positionX + targetWidth && // checks to see if the bullets lhs is less than targets rhs
+               bulletX + bulletWidth > positionX && // bullets rhs is greater then targets lhs
+                bulletY < positionY + targetHeight &&// bullets top is above targets bottom
+                bulletY + bulletHeight > positionY;// bullets bottom is below the targets top
+
+    }
+
+    public ImageView getSpriteView(){
+        return spriteView;
     }
 }
 

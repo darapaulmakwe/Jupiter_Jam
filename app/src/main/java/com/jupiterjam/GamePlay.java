@@ -22,9 +22,10 @@ import java.util.ArrayList;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.util.Iterator;
 import java.util.Random;
 
-public class GamePlay extends AppCompatActivity {
+public class GamePlay extends AppCompatActivity{
     // Define Player Object
     private Player player;
     private Enemy enemy;
@@ -55,6 +56,9 @@ public class GamePlay extends AppCompatActivity {
     private Handler asteroidHandler; // Handler for timing and updates
     private Runnable asteroidRunnable;
     private Random random;
+    private ArrayList<Bullet> enemyBullets = new ArrayList<>();
+
+    private ArrayList<Bullet> playerBullets = new ArrayList<>();
 
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -124,17 +128,44 @@ public class GamePlay extends AppCompatActivity {
              // Apply to the layout
              gameLayout.addView(bullet);
              player.setBulletView(bullet);
-             player.shoot();
+             Bullet newBullet = player.shoot();
+             playerBullets.add(newBullet);
          }
      });
      enemy =  new Enemy(enemySprite, gameLayout,400f,-300f);
+     enemy.setBulletRegisterCallback(new Enemy.BulletRegisterCallback() {
+         @Override
+         public void enemyBullet(Bullet bullet) {
+             enemyBullets.add(bullet);
+         }
+     });
      enemy.startShooting();
      enemyRunnable = new Runnable() {
          @Override
          public void run() {
              if (enemy != null){
                  enemy.updateEnemyPosition();
+                 enemyHit(enemy,playerBullets);
+                 playerHit(player,enemyBullets);
+
              }
+             Iterator<Bullet> playerIterator = playerBullets.iterator();
+             while(playerIterator.hasNext()){
+                 Bullet bullet = playerIterator.next();
+                 if(!bullet.getSpriteView().isShown()){
+                     playerIterator.remove();
+                 }
+             }
+
+             Iterator<Bullet> enemyIterator = enemyBullets.iterator();
+             while(enemyIterator.hasNext()){
+                 Bullet bullet = enemyIterator.next();
+                 if(!bullet.getSpriteView().isShown()){
+                     enemyIterator.remove();
+                 }
+             }
+
+
              enemyHandler.postDelayed(this,17); // need to edit the speed
          }
      };
@@ -166,6 +197,7 @@ public class GamePlay extends AppCompatActivity {
              resumeGame();
          }
      });
+
  }
 
     // Method to spawn new asteroids at random intervals
@@ -267,6 +299,32 @@ public class GamePlay extends AppCompatActivity {
         startActivity(new Intent(this,MainMenu.class));
         finish();
     }
+
+    private void enemyHit(Enemy enemy, ArrayList<Bullet> bullets){
+        for(Bullet bullet : bullets){
+            if(bullet.hitTarget(enemy.getX(), enemy.getY(),enemy.getHeight(),enemy.getWidth())){
+                enemy.gotHit();
+                bullet.stopBullet();
+                bullets.remove(bullet);
+                break;
+
+            }
+        }
+    }
+    private void playerHit(Player player, ArrayList<Bullet> bullets){
+        for(Bullet bullet : bullets){
+            if(bullet.hitTarget(player.getX(), player.getY(), player.getHeight(), player.getWidth())){
+                player.gotHit();
+                bullet.stopBullet();
+                bullets.remove(bullet);
+            }
+
+        }
+    }
+
+
+
+
 
 
 }
