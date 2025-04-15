@@ -72,7 +72,7 @@ public class Player {
         float xPos = spriteView.getX();
         float yPos = spriteView.getY();
 
-        Bullet bullet = new Bullet(bulletView, xPos, yPos);
+        Bullet bullet = new Bullet(bulletView, xPos, yPos,-20);
         bullet.startMovement();
     }
     private void spawnBullet(float xPos, float yPos){

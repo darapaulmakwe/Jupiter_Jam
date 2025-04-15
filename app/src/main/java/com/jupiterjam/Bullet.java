@@ -8,15 +8,16 @@ public class Bullet {
     private float xPosition;
     private float yPosition;
     private boolean isBulletActive = false;
-    private final float bulletSpeed = -20;
+    private float bulletSpeed = 20;
     private final int frameRate = 60;
     private final Handler handler = new Handler();
 
     //Constructor
-    public Bullet(ImageView spriteView, float xPosition, float yPosition){
+    public Bullet(ImageView spriteView, float xPosition, float yPosition, float bulletSpeed){
         this.spriteView = spriteView;
         this.xPosition = xPosition;
         this.yPosition = yPosition;
+        this.bulletSpeed = bulletSpeed;
         isBulletActive = true;
     }
     public void startMovement(){

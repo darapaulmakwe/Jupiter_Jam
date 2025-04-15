@@ -56,6 +56,7 @@ public class GamePlay extends AppCompatActivity {
     private Runnable asteroidRunnable;
     private Random random;
 
+
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
         @Override
@@ -126,7 +127,8 @@ public class GamePlay extends AppCompatActivity {
              player.shoot();
          }
      });
-     enemy =  new Enemy(enemySprite,400f,-300f);
+     enemy =  new Enemy(enemySprite, gameLayout,400f,-300f);
+     enemy.startShooting();
      enemyRunnable = new Runnable() {
          @Override
          public void run() {
