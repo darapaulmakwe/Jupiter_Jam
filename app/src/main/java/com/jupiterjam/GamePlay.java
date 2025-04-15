@@ -301,22 +301,27 @@ public class GamePlay extends AppCompatActivity{
     }
 
     private void enemyHit(Enemy enemy, ArrayList<Bullet> bullets){
-        for(Bullet bullet : bullets){
+        Iterator<Bullet> iterator = bullets.iterator();
+        while(iterator.hasNext()){
+            Bullet bullet = iterator.next();
             if(bullet.hitTarget(enemy.getX(), enemy.getY(),enemy.getHeight(),enemy.getWidth())){
                 enemy.gotHit();
                 bullet.stopBullet();
-                bullets.remove(bullet);
+                iterator.remove();
                 break;
 
             }
         }
     }
     private void playerHit(Player player, ArrayList<Bullet> bullets){
-        for(Bullet bullet : bullets){
+        Iterator<Bullet> iterator = bullets.iterator();
+        while(iterator.hasNext()){
+            Bullet bullet = iterator.next();
             if(bullet.hitTarget(player.getX(), player.getY(), player.getHeight(), player.getWidth())){
                 player.gotHit();
                 bullet.stopBullet();
-                bullets.remove(bullet);
+                iterator.remove();
+                break;
             }
 
         }
