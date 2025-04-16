@@ -105,7 +105,7 @@ public class Player {
     }
 
     public void gotHit(){
-        health -= 100;
+        health -= 10;
 
         if(health <= 0){
             spriteView.setVisibility(View.INVISIBLE);

@@ -1,26 +1,29 @@
 package com.jupiterjam;
-
 import android.media.Image;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.List;
-
+import java.util.Random;
 public class Enemy {
     private int health = 100;
 
     private ImageView spriteView;
     private ImageView bulletView;
     private ViewGroup parentLayout;
-    private float movementSpeed = 50f; // edit this aswell
+    private float movementSpeed = 20f; // edit this aswell
 
     private float maxHorizontal = 600f;
     private float direction = 1f;
     private float minHorizontal = 0f;
+    private long lastDirectionChange = 0;
+    private long timeUntilNextChange = 1500;
+
+    private Random random = new Random();
     private Handler bulletHandler = new Handler();
     private final int timeBetweenShots = 1000;
     boolean isShooting = false;
@@ -61,6 +64,16 @@ public class Enemy {
 
 
     private void move() {
+        long currentTime =  System.currentTimeMillis();
+        if(currentTime - lastDirectionChange > timeUntilNextChange){
+            if(random.nextFloat() < 0.33){
+                direction *= -1; // 33% change of random movement back and forth
+            }
+
+        }
+        timeUntilNextChange = 10 + random.nextInt(100); // next change 0.5-2 seconds
+        lastDirectionChange = currentTime;// iterate time
+
         float currentX = spriteView.getTranslationX();
         float newX = currentX + (direction * movementSpeed);
 
@@ -109,13 +122,13 @@ public class Enemy {
         bulletView.setImageResource(R.drawable.laser_bullet);
         bulletView.setVisibility(View.INVISIBLE);
 
-        int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100 , spriteView.getResources().getDisplayMetrics());
+        int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70 , spriteView.getResources().getDisplayMetrics());
         ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(size, size);
         bulletView.setLayoutParams(layoutParams);
         parentLayout.addView(bulletView);
 
 
-        Bullet bullet = new Bullet(bulletView, xPos, yPos,20);
+        Bullet bullet = new Bullet(bulletView, xPos, yPos,30);
         bullet.startMovement();
 
         if(bulletRegisterCallback != null){
@@ -128,7 +141,7 @@ public class Enemy {
     }
 
     public void gotHit(){
-        health -= 100;
+        health -= 10;
 
         if(health <= 0){
             spriteView.setVisibility(View.INVISIBLE);

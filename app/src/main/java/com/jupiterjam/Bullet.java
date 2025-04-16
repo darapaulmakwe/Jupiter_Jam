@@ -33,7 +33,7 @@ public class Bullet {
                     spriteView.setY(yPosition);
 
                     // Check for conditions to stop the bullet (e.g., hitting a target, going off-screen)
-                    if (yPosition < 0 || yPosition > 2000) { // Example: Bullet went off the top screen
+                    if (yPosition < 0 || yPosition > 5000) { // Example: Bullet went off the top screen
                         stopBullet();
                         return;
                     }
