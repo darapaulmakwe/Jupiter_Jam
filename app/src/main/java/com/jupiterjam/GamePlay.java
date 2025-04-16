@@ -17,6 +17,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.ArrayList;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +37,7 @@ public class GamePlay extends AppCompatActivity{
     ImageView pauseMenu;
     ImageButton pauseBtn;
     TextView pauseMenuText;
+
     public Button resumeButton;
     private Button homeButton;
 
@@ -42,6 +45,10 @@ public class GamePlay extends AppCompatActivity{
     private CountDownTimer countdownTimer;
     ImageView countdownTint;
     TextView countdownText;
+
+    // end game elements
+    ImageView endGame;
+    public Button restartButton;
 
     //Define sensor variables
     private SensorManager mSensorManager;
@@ -169,6 +176,28 @@ public class GamePlay extends AppCompatActivity{
              enemyHandler.postDelayed(this,17); // need to edit the speed
          }
      };
+     enemy.setEnemyDeathListener(new Enemy.EnemyDeathListener() {
+         @Override
+         public void enemyDeath() {
+             endGame();
+             Intent intent = new Intent(GamePlay.this, EndGame.class);
+             intent.putExtra("result", true);
+             intent.putExtra("enemies Defeated", 0);
+             startActivity(intent);
+             finish();
+         }
+     });
+     player.setPlayerDeathListener(new Player.PlayerDeathListener() {
+         @Override
+         public void playerDeath() {
+             endGame();
+             Intent intent = new Intent(GamePlay.this, EndGame.class);
+             intent.putExtra("result", false);
+             intent.putExtra("enemies Defeated", 0);
+             startActivity(intent);
+             finish();
+         }
+     });
 
      asteroidLayout = (FrameLayout) findViewById(R.id.asteroidLayout);
      asteroids = new ArrayList<>();
@@ -254,7 +283,6 @@ public class GamePlay extends AppCompatActivity{
         }
         // Pauses enemy shooting
         enemy.stopShooting();
-
     }
 
     public void startCountdown() {
@@ -326,6 +354,21 @@ public class GamePlay extends AppCompatActivity{
 
         }
     }
+
+
+    protected void endGame() {
+        mSensorManager.unregisterListener(sensorEventListener);
+        enemyHandler.removeCallbacks(enemyRunnable);
+
+        asteroidHandler.removeCallbacks(asteroidRunnable);
+        // Pauses asteroid animations individually through asteroid class
+        for (int i = 0; i < asteroids.size(); i++) {
+            asteroids.get(i).pauseAsteroid();
+        }
+        // Pauses enemy shooting
+        enemy.stopShooting();
+    }
+
 
 
 

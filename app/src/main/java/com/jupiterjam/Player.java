@@ -30,6 +30,15 @@ public class Player {
         return spriteView.getWidth();
     }
 
+    private PlayerDeathListener deathListener;
+    public interface PlayerDeathListener{
+        void playerDeath();
+    }
+
+    public void setPlayerDeathListener(PlayerDeathListener listener){
+        this.deathListener = listener;
+    }
+
     // Constructor
     public Player(ImageView spriteView, ImageView bulletView) {
         this.spriteView = spriteView;
@@ -106,10 +115,13 @@ public class Player {
 
     public void gotHit(){
         health -= 10;
-
         if(health <= 0){
             spriteView.setVisibility(View.INVISIBLE);
+            if(deathListener != null){
+                deathListener.playerDeath();
+            }
         }
+
 
     }
 }

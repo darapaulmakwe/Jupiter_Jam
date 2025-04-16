@@ -27,6 +27,7 @@ public class Enemy {
     private Handler bulletHandler = new Handler();
     private final int timeBetweenShots = 1000;
     boolean isShooting = false;
+    private EnemyDeathListener deathListener;
 
     private ArrayList<Bullet> enemyBullets = new ArrayList<>();
 
@@ -41,6 +42,12 @@ public class Enemy {
     }
     public float getWidth(){
         return spriteView.getWidth();
+    }
+    public interface EnemyDeathListener{
+        void enemyDeath();
+    }
+    public void setEnemyDeathListener(EnemyDeathListener listener){
+        this.deathListener = listener;
     }
     public interface BulletRegisterCallback{
         void enemyBullet(Bullet bullet);
@@ -146,6 +153,9 @@ public class Enemy {
         if(health <= 0){
             spriteView.setVisibility(View.INVISIBLE);
             isShooting = false;
+            if(deathListener != null){
+                deathListener.enemyDeath();
+            }
         }
 
     }

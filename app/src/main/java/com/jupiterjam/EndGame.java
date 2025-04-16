@@ -13,6 +13,24 @@ public class EndGame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.end_game);
+
+        //Get results
+        Intent intent = getIntent();
+        boolean Win = intent.getBooleanExtra("result", false);
+        int enemiesDefeated = intent.getIntExtra("enemies Defeated:", 0);// optional
+
+        TextView gameResult = findViewById(R.id.gameResult);
+        TextView statCount = findViewById(R.id.statCount);
+
+        if (Win){
+            gameResult.setText(R.string.you_won);
+            statCount.setText("Enemies Defeated : " + enemiesDefeated);
+        }
+        else {
+            gameResult.setText(R.string.game_over);
+            statCount.setText("You Lose");
+        }
+
     }
 
     public void endGame(boolean result){
