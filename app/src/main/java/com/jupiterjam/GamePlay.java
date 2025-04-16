@@ -140,6 +140,7 @@ public class GamePlay extends AppCompatActivity{
          }
      });
      enemy =  new Enemy(enemySprite, gameLayout,400f,-300f);
+     enemy.setPlayer(player);
      enemy.setBulletRegisterCallback(new Enemy.BulletRegisterCallback() {
          @Override
          public void enemyBullet(Bullet bullet) {

@@ -15,22 +15,34 @@ public class Enemy {
     private ImageView spriteView;
     private ImageView bulletView;
     private ViewGroup parentLayout;
-    private float movementSpeed = 20f; // edit this aswell
 
+    // for movement speed directions etc
+    private float movementSpeed = 20f;
     private float maxHorizontal = 600f;
     private float direction = 1f;
     private float minHorizontal = 0f;
+
+
+    // for random movement
     private long lastDirectionChange = 0;
     private long timeUntilNextChange = 1500;
-
     private Random random = new Random();
+    // tracking settings
+    private long lastTimeTracked = 0;
+    private long timeUntilNextTrack = 3000;
+    private Player player;
+    public void setPlayer(Player player){
+        this.player = player;
+    }
+
+    // for bullets
     private Handler bulletHandler = new Handler();
     private final int timeBetweenShots = 1000;
     boolean isShooting = false;
-    private EnemyDeathListener deathListener;
-
     private ArrayList<Bullet> enemyBullets = new ArrayList<>();
 
+
+    // easier and faster access to dimensions of ship
     public float getX(){
         return spriteView.getX();
     }
@@ -43,6 +55,8 @@ public class Enemy {
     public float getWidth(){
         return spriteView.getWidth();
     }
+// for death listener, sends to the gameplay.java
+    private EnemyDeathListener deathListener;
     public interface EnemyDeathListener{
         void enemyDeath();
     }
@@ -69,17 +83,35 @@ public class Enemy {
         move();
         }
 
-
+// sources i used to help with tracking the player
+    //https://www.baeldung.com/java-ternary-operator, and https://www.w3schools.com/java/java_conditions_shorthand.asp
     private void move() {
         long currentTime =  System.currentTimeMillis();
-        if(currentTime - lastDirectionChange > timeUntilNextChange){
+        if((currentTime - lastDirectionChange) > timeUntilNextChange){
             if(random.nextFloat() < 0.33){
                 direction *= -1; // 33% change of random movement back and forth
             }
+            timeUntilNextChange = 500 + random.nextInt(800); // next change 0.5-2 seconds
+            lastDirectionChange = currentTime;// iterate time
+
 
         }
-        timeUntilNextChange = 10 + random.nextInt(100); // next change 0.5-2 seconds
-        lastDirectionChange = currentTime;// iterate time
+
+
+
+        if((currentTime - lastTimeTracked ) > timeUntilNextTrack && player!= null){
+            float enemyX = spriteView.getTranslationX(); // get the direction of the enemy
+            float playerX = player.getX();
+            float directionToPlayer = playerX - enemyX; // if the enemy is to the right result is pos if to the left then neg
+
+
+            if(Math.abs(directionToPlayer) > 2){
+                direction = directionToPlayer > 0 ? 1: -1;
+            }
+            lastTimeTracked = currentTime;
+            timeUntilNextTrack = 500 + random.nextInt(800);
+        }
+
 
         float currentX = spriteView.getTranslationX();
         float newX = currentX + (direction * movementSpeed);
