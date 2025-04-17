@@ -3,6 +3,7 @@ package com.jupiterjam;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.widget.ImageView;
 import android.widget.FrameLayout;
@@ -151,6 +152,11 @@ public class Asteroid {
     private void explode(){
         int asteroidRemoveDelay = 1000;
         asteroidView.setImageResource(R.drawable.explosion);
+        MediaPlayer explosionSound = MediaPlayer.create(context, R.raw.explosion_sound);
+        explosionSound.setOnCompletionListener(mp -> {
+            mp.release(); // clean up resources
+        });
+        explosionSound.start();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
