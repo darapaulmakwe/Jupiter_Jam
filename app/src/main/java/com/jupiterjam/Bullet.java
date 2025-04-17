@@ -63,6 +63,9 @@ public class Bullet {
 
     }
 
+    public float getxPosition(){ return xPosition; }
+    public float getyPosition(){ return yPosition; }
+
     public ImageView getSpriteView(){
         return spriteView;
     }

@@ -81,8 +81,12 @@ public class Asteroid {
         // Random speed: 5 to 12 seconds to cross the screen
         int duration = new Random().nextInt(minDuration) + (maxDuration - minDuration);
 
-        // Animate X position from right to left
+        // Animate X position from right to left with rotation
         animator = ObjectAnimator.ofFloat(asteroidView, "x", startX, endX);
+        ObjectAnimator rotateAnim = ObjectAnimator.ofFloat(asteroidView, "rotation", 0f, 360f);
+        rotateAnim.setDuration(duration);
+        rotateAnim.setRepeatCount(ObjectAnimator.INFINITE);
+        rotateAnim.start();
         animator.setDuration(duration);
 
         // When animation ends, remove the asteroid

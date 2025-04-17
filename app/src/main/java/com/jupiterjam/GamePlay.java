@@ -108,6 +108,13 @@ public class GamePlay extends AppCompatActivity{
      ImageView bulletSprite = findViewById(R.id.bullet);
      bulletSprite.setVisibility(View.INVISIBLE);
 
+     asteroidLayout = (FrameLayout) findViewById(R.id.asteroidLayout);
+     asteroids = new ArrayList<>();
+     asteroidHandler = new Handler();
+     random = new Random();
+     // Start spawning asteroids
+        spawnAsteroids();
+
      ImageView enemySprite = findViewById(R.id.enemy);
      player = new Player(playerSprite, bulletSprite);
      gameLayout.setOnClickListener(new View.OnClickListener() {
@@ -156,7 +163,15 @@ public class GamePlay extends AppCompatActivity{
                  enemyHit(enemy,playerBullets);
                  playerHit(player,enemyBullets);
 
-             }
+                 for (int i = 0; i < playerBullets.size(); i++) {
+                     Bullet bullet = playerBullets.get(i);
+                     for (Asteroid asteroid : asteroids) {
+                         if (!asteroid.isDestroyed() && asteroid.isHit(bullet.getxPosition(), bullet.getyPosition())) {
+                             asteroid.takeDamage(1);
+                             bullet.stopBullet();
+                             break;
+                         }
+                     }}}
              Iterator<Bullet> playerIterator = playerBullets.iterator();
              while(playerIterator.hasNext()){
                  Bullet bullet = playerIterator.next();
@@ -164,7 +179,6 @@ public class GamePlay extends AppCompatActivity{
                      playerIterator.remove();
                  }
              }
-
              Iterator<Bullet> enemyIterator = enemyBullets.iterator();
              while(enemyIterator.hasNext()){
                  Bullet bullet = enemyIterator.next();
@@ -172,8 +186,6 @@ public class GamePlay extends AppCompatActivity{
                      enemyIterator.remove();
                  }
              }
-
-
              enemyHandler.postDelayed(this,17); // need to edit the speed
          }
      };
@@ -200,14 +212,6 @@ public class GamePlay extends AppCompatActivity{
          }
      });
 
-     asteroidLayout = (FrameLayout) findViewById(R.id.asteroidLayout);
-     asteroids = new ArrayList<>();
-     asteroidHandler = new Handler();
-     random = new Random();
-
-     // Start spawning asteroids
-     spawnAsteroids();
-
      //Initialize pause menu buttons
      pauseMenu = findViewById(R.id.pauseMenu);
      resumeButton = findViewById(R.id.resumeButton);
@@ -227,7 +231,6 @@ public class GamePlay extends AppCompatActivity{
              resumeGame();
          }
      });
-
  }
 
     // Method to spawn new asteroids at random intervals
@@ -355,7 +358,6 @@ public class GamePlay extends AppCompatActivity{
 
         }
     }
-
 
     protected void endGame() {
         mSensorManager.unregisterListener(sensorEventListener);
