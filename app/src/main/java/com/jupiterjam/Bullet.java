@@ -71,7 +71,3 @@ public class Bullet {
     }
 }
 
-//For player
-/*
-
-*/

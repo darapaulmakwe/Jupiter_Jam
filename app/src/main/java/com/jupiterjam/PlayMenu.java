@@ -22,7 +22,19 @@ public class PlayMenu extends AppCompatActivity {
     }
 
     public void openBeginnerTab(View myView){
-        startActivity(new Intent(this,GamePlay.class));
+        gameDifficulty("beginner");
+    }
+    public void openMediumTab(View myView){
+        gameDifficulty("medium");
+    }
+    public void openHardTab(View myView){
+        gameDifficulty("hard");
+    }
+
+    private void gameDifficulty(String difficulty){
+        Intent intent = new Intent(this, GamePlay.class);
+        intent.putExtra("difficulty", difficulty);
+        startActivity(intent);
         finish();
     }
 

@@ -37,7 +37,7 @@ public class Enemy {
 
     // for bullets
     private Handler bulletHandler = new Handler();
-    private final int timeBetweenShots = 1000;
+    private int timeBetweenShots = 1000;
     boolean isShooting = false;
     private ArrayList<Bullet> enemyBullets = new ArrayList<>();
 
@@ -68,11 +68,16 @@ public class Enemy {
     }
     private BulletRegisterCallback bulletRegisterCallback;
 
-    public Enemy(ImageView spriteView, ViewGroup bulletView, float maxHorizontal, float minHorizontal){
+    public Enemy(ImageView spriteView, ViewGroup bulletView, float maxHorizontal, float minHorizontal,
+                 float movementSpeed, int health, int timeBetweenShots){
         this.spriteView = spriteView;
         this.maxHorizontal = maxHorizontal;
         this.minHorizontal = minHorizontal;
         this.parentLayout = bulletView;
+        this.movementSpeed = movementSpeed;
+        this.health = health;
+        this.timeBetweenShots = timeBetweenShots;
+
 
     }
     public void setBulletRegisterCallback(BulletRegisterCallback callback){

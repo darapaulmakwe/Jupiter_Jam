@@ -69,6 +69,13 @@ public class GamePlay extends AppCompatActivity{
     private ArrayList<Bullet> playerBullets = new ArrayList<>();
 
 
+    // difficulty get
+
+    private String difficulty;
+
+
+
+
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
         @Override
@@ -93,6 +100,8 @@ public class GamePlay extends AppCompatActivity{
      super.onCreate(savedInstanceState);
      setContentView(R.layout.gameplay);
 
+     difficulty = getIntent().getStringExtra("difficulty");
+
      // Initialize countdown
      countdownTint = findViewById(R.id.countdownTint);
      countdownText = findViewById(R.id.countdownInt);
@@ -104,11 +113,12 @@ public class GamePlay extends AppCompatActivity{
      mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
      ConstraintLayout gameLayout = findViewById(R.id.gameLayout);
-     // Initialize player sprite
+     // Initialize player sprite and call shooting and creation functions
      ImageView playerSprite = findViewById(R.id.rocket);
-
      ImageView bulletSprite = findViewById(R.id.bullet);
-     bulletSprite.setVisibility(View.INVISIBLE);
+     createPlayer(playerSprite,bulletSprite);
+     playerShooting(gameLayout);
+
 
      asteroidLayout = (FrameLayout) findViewById(R.id.asteroidLayout);
      asteroids = new ArrayList<>();
@@ -117,95 +127,14 @@ public class GamePlay extends AppCompatActivity{
      // Start spawning asteroids
         spawnAsteroids();
 
+
+     // create enemy sprite and call functions to start game loop
      ImageView enemySprite = findViewById(R.id.enemy);
-     player = new Player(playerSprite, bulletSprite);
-     gameLayout.setOnClickListener(new View.OnClickListener() {
+     enemyCreate(enemySprite,gameLayout);
+     enemyRunnable();
+     playerDeathListener();
+     enemyHandler.post(enemyRunnable);
 
-         @Override
-         public void onClick(View v) {
-             ImageView bullet = new ImageView(GamePlay.this);
-             bullet.setVisibility(View.INVISIBLE);
-             bullet.setImageResource(R.drawable.laser_bullet);
-
-             int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                     114, getResources().getDisplayMetrics());
-             //Layout parameters for the bullet
-             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(size, size);
-
-             //Sets constraints
-             layoutParams.bottomToBottom = R.id.asteroidLayout;
-             layoutParams.topToTop = R.id.asteroidLayout;
-             layoutParams.startToStart = R.id.asteroidLayout;
-             layoutParams.horizontalBias = 0.498f;
-
-             // Apply to image view
-             bullet.setLayoutParams(layoutParams);
-
-             // Apply to the layout
-             gameLayout.addView(bullet);
-             player.setBulletView(bullet);
-             Bullet newBullet = player.shoot();
-             playerBullets.add(newBullet);
-         }
-     });
-     enemy =  new Enemy(enemySprite, gameLayout,400f,-300f);
-     enemy.setPlayer(player);
-     enemy.setBulletRegisterCallback(new Enemy.BulletRegisterCallback() {
-         @Override
-         public void enemyBullet(Bullet bullet) {
-             enemyBullets.add(bullet);
-         }
-     });
-     enemy.startShooting();
-     enemyRunnable = new Runnable() {
-         @Override
-         public void run() {
-             if (enemy != null){
-                 enemy.updateEnemyPosition();
-                 enemyHit(enemy,playerBullets);
-                 playerHit(player,enemyBullets);
-
-                 asteroidCollisionCheck();
-             }
-             Iterator<Bullet> playerIterator = playerBullets.iterator();
-             while(playerIterator.hasNext()){
-                 Bullet bullet = playerIterator.next();
-                 if(!bullet.getSpriteView().isShown()){
-                     playerIterator.remove();
-                 }
-             }
-             Iterator<Bullet> enemyIterator = enemyBullets.iterator();
-             while(enemyIterator.hasNext()){
-                 Bullet bullet = enemyIterator.next();
-                 if(!bullet.getSpriteView().isShown()){
-                     enemyIterator.remove();
-                 }
-             }
-             enemyHandler.postDelayed(this,17); // need to edit the speed
-         }
-     };
-     enemy.setEnemyDeathListener(new Enemy.EnemyDeathListener() {
-         @Override
-         public void enemyDeath() {
-             endGame();
-             Intent intent = new Intent(GamePlay.this, EndGame.class);
-             intent.putExtra("result", true);
-             intent.putExtra("enemies Defeated", 0);
-             startActivity(intent);
-             finish();
-         }
-     });
-     player.setPlayerDeathListener(new Player.PlayerDeathListener() {
-         @Override
-         public void playerDeath() {
-             endGame();
-             Intent intent = new Intent(GamePlay.this, EndGame.class);
-             intent.putExtra("result", false);
-             intent.putExtra("enemies Defeated", 0);
-             startActivity(intent);
-             finish();
-         }
-     });
 
      //Initialize pause menu buttons
      pauseMenu = findViewById(R.id.pauseMenu);
@@ -365,6 +294,84 @@ public class GamePlay extends AppCompatActivity{
         finish();
     }
 
+    /**
+     * Create the enemy object, then sets up the bullets and death listener.
+     * links the player to the enemy for possible tracking system, and begins
+     * the automatic shooting. lastly does a death listener and ends game
+     * @param enemySprite Image view of the enemy
+     * @param gameLayout layout where the enemy will appear.
+     */
+
+    private void enemyCreate(ImageView enemySprite, ConstraintLayout gameLayout){
+        switch (difficulty){
+            case "beginner":
+                enemy = new Enemy(enemySprite,gameLayout,400f, -300f,
+                        20f,100,2000);
+                break;
+
+            case "medium":
+                enemy = new Enemy(enemySprite,gameLayout, 400f, -300f,
+                        30f,150,1000);
+                break;
+
+            case "hard":
+                enemy = new Enemy(enemySprite, gameLayout, 400f,  -300f,
+                        50f, 200, 500);
+                break;
+            }
+
+        enemy.setPlayer(player);
+        enemy.setBulletRegisterCallback(new Enemy.BulletRegisterCallback() {
+            @Override
+            public void enemyBullet(Bullet bullet) {
+                enemyBullets.add(bullet);
+            }
+        });
+        enemy.setEnemyDeathListener(new Enemy.EnemyDeathListener() {
+            @Override
+            public void enemyDeath() {
+                endGame();
+                Intent intent= new  Intent(GamePlay.this, EndGame.class);
+                intent.putExtra("result", true);
+                intent.putExtra("enemies Defeated", 0);
+                startActivity(intent);
+                finish();
+            }
+        });
+        enemy.startShooting();
+    }
+
+    /**
+     * Start the enemy loop using a Runnable. It updates the movement, checks if it was hit.
+     * and cleans up bullets that have been set off the screen of hit the player
+     * loop is started with the enemyHandler
+     */
+    private void enemyRunnable(){
+        enemyRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(enemy != null){
+                    enemy.updateEnemyPosition();
+                    enemyHit(enemy,playerBullets);
+                    playerHit(player,enemyBullets);
+                    asteroidCollisionCheck();
+                }
+
+                cleanUpBullets(playerBullets);
+                cleanUpBullets(enemyBullets);
+
+                enemyHandler.postDelayed(this,17);
+            }
+        };
+    }
+
+    /**
+     * Checks to see if a bullet from the player hit the enemy. iterates through a list of bullets
+     * and if the bullet hit the enemy then it is removes it from the screen and takes health away
+     * the enemy.
+     * @param enemy the object that is used to check the position of the enemy ship
+     * @param bullets list of bullets that are shot by the player
+     */
     private void enemyHit(Enemy enemy, ArrayList<Bullet> bullets){
         Iterator<Bullet> iterator = bullets.iterator();
         while(iterator.hasNext()){
@@ -378,6 +385,80 @@ public class GamePlay extends AppCompatActivity{
             }
         }
     }
+
+    /**
+     * Initialize the player and links to bulletSpite
+     * @param playerSprite Image view of the user sprite
+     * @param bulletSprite Image view for the firing logic
+     */
+    private void createPlayer(ImageView playerSprite, ImageView bulletSprite){
+        bulletSprite.setVisibility(View.INVISIBLE);
+        player = new Player(playerSprite,bulletSprite);
+    }
+
+
+    /**
+     * Set up a listener for when the user taps the screen to handle shooting
+     * Creates bullet image places it accordingly on the screen and adds it to
+     * the gamelayout and logic
+     * @param gameLayout the layout that detects the tap event
+     */
+    private void playerShooting(ConstraintLayout gameLayout){
+        gameLayout.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ImageView bullet = new ImageView(GamePlay.this);
+                bullet.setVisibility(View.INVISIBLE);
+                bullet.setImageResource(R.drawable.laser_bullet);
+
+                int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                        114, getResources().getDisplayMetrics());
+                //Layout parameters for the bullet
+                ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(size, size);
+
+                //Sets constraints
+                layoutParams.bottomToBottom = R.id.asteroidLayout;
+                layoutParams.topToTop = R.id.asteroidLayout;
+                layoutParams.startToStart = R.id.asteroidLayout;
+                layoutParams.horizontalBias = 0.498f;
+
+                // Apply to image view
+                bullet.setLayoutParams(layoutParams);
+
+                // Apply to the layout
+                gameLayout.addView(bullet);
+                player.setBulletView(bullet);
+                Bullet newBullet = player.shoot();
+                playerBullets.add(newBullet);
+            }
+        });
+    }
+
+    /**
+     * listener to set up a event when the game ends. which is to start the EndGame class
+     */
+    private void playerDeathListener(){
+        player.setPlayerDeathListener(new Player.PlayerDeathListener() {
+            @Override
+            public void playerDeath() {
+                endGame();
+                Intent intent = new Intent(GamePlay.this, EndGame.class);
+                intent.putExtra("result", false);
+                intent.putExtra("enemies Defeated", 0);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    /**
+     * checks to see if the enemies bullets have the player
+     * which are added to a list and iterated through
+     * If it has the player takes damage and removes the bullet from the screen
+     * @param player object to check the collisions
+     * @param bullets list of the enemy bullets
+     */
     private void playerHit(Player player, ArrayList<Bullet> bullets){
         Iterator<Bullet> iterator = bullets.iterator();
         while(iterator.hasNext()){
@@ -392,6 +473,25 @@ public class GamePlay extends AppCompatActivity{
         }
     }
 
+    /**
+     * Removes bullets from the list that aren't visible anymore by checking if its shown on screen
+     * helps performance by clearing inactive objects
+     * @param bulletList list of bullets to clean
+     */
+    private void cleanUpBullets(ArrayList<Bullet> bulletList){
+        Iterator<Bullet> iterator = bulletList.iterator();
+        while (iterator.hasNext()){
+            Bullet bullet = iterator.next();
+            if (!bullet.getSpriteView().isShown()){
+                iterator.remove();
+            }
+        }
+    }
+
+    /**
+     * This is called when one of the two players die
+     * it stops the movement by removing call backs pausing and pausing animation
+     */
     protected void endGame() {
         mSensorManager.unregisterListener(sensorEventListener);
         enemyHandler.removeCallbacks(enemyRunnable);
@@ -401,11 +501,5 @@ public class GamePlay extends AppCompatActivity{
         // Pauses enemy shooting
         enemy.stopShooting();
     }
-
-
-
-
-
-
 
 }
