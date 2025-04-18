@@ -163,15 +163,8 @@ public class GamePlay extends AppCompatActivity{
                  enemyHit(enemy,playerBullets);
                  playerHit(player,enemyBullets);
 
-                 for (int i = 0; i < playerBullets.size(); i++) {
-                     Bullet bullet = playerBullets.get(i);
-                     for (Asteroid asteroid : asteroids) {
-                         if (!asteroid.isDestroyed() && asteroid.isHit(bullet.getxPosition(), bullet.getyPosition())) {
-                             asteroid.takeDamage(1);
-                             bullet.stopBullet();
-                             break;
-                         }
-                     }}}
+                 asteroidCollisionCheck();
+             }
              Iterator<Bullet> playerIterator = playerBullets.iterator();
              while(playerIterator.hasNext()){
                  Bullet bullet = playerIterator.next();
@@ -257,6 +250,18 @@ public class GamePlay extends AppCompatActivity{
                 asteroidHandler.postDelayed(this, random.nextInt(2000) + 1000); // Random interval (2 to 5 seconds)
             }
         }, random.nextInt(2000) + 1000); // Initial delay (1 to 3 seconds)
+    }
+
+    private void asteroidCollisionCheck(){
+        for (int i = 0; i < playerBullets.size(); i++) {
+            Bullet bullet = playerBullets.get(i);
+            for (Asteroid asteroid : asteroids) {
+                if (!asteroid.isDestroyed() && asteroid.isHit(bullet.getxPosition(), bullet.getyPosition())) {
+                    asteroid.takeDamage(1);
+                    bullet.stopBullet();
+                    break;
+                }
+            }}
     }
 
     //Generate a sensor event listener for the application
