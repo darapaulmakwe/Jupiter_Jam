@@ -34,6 +34,7 @@ public class GamePlay extends AppCompatActivity{
 
     //Define Pause menu elements
     private boolean isPaused = false;
+    private boolean isGameActive = false;
     ImageView pauseMenu;
     ImageButton pauseBtn;
     TextView pauseMenuText;
@@ -95,7 +96,8 @@ public class GamePlay extends AppCompatActivity{
      // Initialize countdown
      countdownTint = findViewById(R.id.countdownTint);
      countdownText = findViewById(R.id.countdownInt);
-     startCountdown();
+     pauseBtn = findViewById(R.id.pauseButton);
+     startCountdownTimer();
 
      // Initialize the sensor manager and actual sensor
      mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
@@ -264,37 +266,14 @@ public class GamePlay extends AppCompatActivity{
             }}
     }
 
-    //Generate a sensor event listener for the application
-    //The sensor manager uses the sensorEventListener to track any changes in the accelerometer
-    protected void onResume() {
-        super.onResume();
-        mSensorManager.registerListener(sensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-        enemyHandler.post(enemyRunnable);
-
-        asteroidHandler.post(asteroidRunnable);
-        //Resumes asteroid animations individually through asteroid class
-        for (int i = 0; i < asteroids.size(); i++) {
-            asteroids.get(i).resumeAsteroid();
-        }
-        // resumes enemy shooting
-        enemy.startShooting();
-    }
-
-    protected void onPause() {
-        super.onPause();
-        mSensorManager.unregisterListener(sensorEventListener);
-        enemyHandler.removeCallbacks(enemyRunnable);
-
-        asteroidHandler.removeCallbacks(asteroidRunnable);
-        // Pauses asteroid animations individually through asteroid class
+    private void pauseAsteroidAnimation(){
         for (int i = 0; i < asteroids.size(); i++) {
             asteroids.get(i).pauseAsteroid();
         }
-        // Pauses enemy shooting
-        enemy.stopShooting();
     }
 
-    public void startCountdown() {
+    public void startCountdownTimer() {
+        pauseBtn.setEnabled(false);
          countdownTimer = new CountDownTimer(4000, 1000) {
 
             public void onTick(long millisUntilFinished) {
@@ -309,12 +288,59 @@ public class GamePlay extends AppCompatActivity{
             public void onFinish() {
                 countdownText.setVisibility(View.GONE);
                 countdownTint.setVisibility(View.GONE);
-                onResume();
+                pauseBtn.setEnabled(true);
+                resumeGamePlay();
             }
         };countdownTimer.start();
     }
+    /**
+     * This method resumes gameplay when the user taps on the Resume button to unpause the game
+     * Reactivates general game logic like player movement, enemy behavior, asteroid spawning
+     * It's called when the game is in a valid game state to continue (e.g. after countdown or closing pause menu)
+     */
+    private void resumeGamePlay() {
+        //Generate a sensor event listener for the application
+        //The sensor manager uses the sensorEventListener to track any changes in the accelerometer
+        mSensorManager.registerListener(sensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
+        enemyHandler.post(enemyRunnable);
+        asteroidHandler.post(asteroidRunnable);
 
-    //Toggle functions for Pause Menu
+        pauseAsteroidAnimation();
+
+        enemy.startShooting();
+    }
+
+    /**
+     * This method runs when the game screen becomes visible again (eg. after switching apps)
+     * It doesn’t resume gameplay directly because the game might still need to stay paused
+     * (eg. If the game was already paused before switching apps)
+     * So don't put game resume code here but use resumeGamePlay() for that instead
+     */
+    protected void onResume() {
+        super.onResume();
+        if (!isPaused && isGameActive ) {
+            resumeGamePlay();
+        }
+    }
+
+    /**
+     * Pauses all active game logic like sensor updates/ player movement, enemy behavior,
+     * asteroid spawning
+     */
+    protected void onPause() {
+        super.onPause();
+        mSensorManager.unregisterListener(sensorEventListener);
+        enemyHandler.removeCallbacks(enemyRunnable);
+
+        asteroidHandler.removeCallbacks(asteroidRunnable);
+        pauseAsteroidAnimation();
+        enemy.stopShooting();
+    }
+
+    /**
+     * resumeGame and pauseGame are pause menu toggle functions that handle showing
+     * and hiding the visual pause menu
+     */
     public void resumeGame(){
         pauseMenu.setVisibility(View.GONE);
         resumeButton.setVisibility(View.GONE);
@@ -322,6 +348,8 @@ public class GamePlay extends AppCompatActivity{
         pauseMenuText.setVisibility(View.GONE);
         onResume();
         isPaused = false;
+        isGameActive = true;
+        resumeGamePlay();
     }
     public void pauseGame(){
         pauseMenu.setVisibility(View.VISIBLE);
@@ -369,10 +397,7 @@ public class GamePlay extends AppCompatActivity{
         enemyHandler.removeCallbacks(enemyRunnable);
 
         asteroidHandler.removeCallbacks(asteroidRunnable);
-        // Pauses asteroid animations individually through asteroid class
-        for (int i = 0; i < asteroids.size(); i++) {
-            asteroids.get(i).pauseAsteroid();
-        }
+        pauseAsteroidAnimation();
         // Pauses enemy shooting
         enemy.stopShooting();
     }
