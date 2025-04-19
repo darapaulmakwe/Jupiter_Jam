@@ -114,12 +114,12 @@ public class GamePlay extends AppCompatActivity{
      mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
      ConstraintLayout gameLayout = findViewById(R.id.gameLayout);
-     // Initialize player sprite and call shooting and creation functions
+
+     // Initialize player sprite
      ImageView playerSprite = findViewById(R.id.rocket);
-     // Loads users theme preferences ie. spaceship/rocket style
-     SharedPreferences prefs = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
-     int rocketResId = prefs.getInt("selectedTheme", R.drawable.jupiter_ship); // fallback default
-     playerSprite.setImageResource(rocketResId);
+     initPlayerSprite(playerSprite);
+
+     // Initialize call shooting and creation functions
      ImageView bulletSprite = findViewById(R.id.bullet);
      healthProgressBar = findViewById(R.id.healthProgressBar);
      createPlayer(playerSprite,bulletSprite, healthProgressBar);
@@ -131,7 +131,7 @@ public class GamePlay extends AppCompatActivity{
      asteroidHandler = new Handler();
      random = new Random();
      // Start spawning asteroids
-        spawnAsteroids();
+     spawnAsteroids();
 
 
      // create enemy sprite and call functions to start game loop
@@ -162,6 +162,13 @@ public class GamePlay extends AppCompatActivity{
          }
      });
  }
+
+    private void initPlayerSprite(ImageView playerSprite) {
+        // Loads users theme preferences ie. spaceship/rocket style and sets it as the
+        SharedPreferences prefs = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        int rocketResId = prefs.getInt("selectedTheme", R.drawable.jupiter_ship); // fallback default
+        playerSprite.setImageResource(rocketResId);
+    }
 
     // Method to spawn new asteroids at random intervals
     private void spawnAsteroids() {
