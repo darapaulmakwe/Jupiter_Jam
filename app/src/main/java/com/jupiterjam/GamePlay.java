@@ -1,6 +1,7 @@
 package com.jupiterjam;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -115,6 +116,10 @@ public class GamePlay extends AppCompatActivity{
      ConstraintLayout gameLayout = findViewById(R.id.gameLayout);
      // Initialize player sprite and call shooting and creation functions
      ImageView playerSprite = findViewById(R.id.rocket);
+     // Loads users theme preferences ie. spaceship/rocket style
+     SharedPreferences prefs = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+     int rocketResId = prefs.getInt("selectedTheme", R.drawable.jupiter_ship); // fallback default
+     playerSprite.setImageResource(rocketResId);
      ImageView bulletSprite = findViewById(R.id.bullet);
      createPlayer(playerSprite,bulletSprite);
      playerShooting(gameLayout);
