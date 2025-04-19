@@ -75,8 +75,6 @@ public class GamePlay extends AppCompatActivity{
     private String difficulty;
 
 
-
-
     private SensorEventListener sensorEventListener = new SensorEventListener() {
 
         @Override

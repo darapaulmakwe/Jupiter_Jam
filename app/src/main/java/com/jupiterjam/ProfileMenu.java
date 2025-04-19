@@ -21,6 +21,10 @@ public class ProfileMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupProfileView();
+    }
+
+    private void setupProfileView(){
         setContentView(R.layout.profile_menu);
 
         userThemePrefs = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
@@ -47,6 +51,7 @@ public class ProfileMenu extends AppCompatActivity {
             setContentView(R.layout.theme_menu);
             setupThemeSelection();
         });
+
     }
 
     private void setupThemeSelection() {
@@ -66,6 +71,7 @@ public class ProfileMenu extends AppCompatActivity {
         themeImage.setImageResource(themeDrawable);
 
         // Display updated theme name
+        currentTheme = findViewById(R.id.currentTheme);
         currentTheme.setText(name);
 
         // Save to users SharedPreferences
@@ -80,8 +86,10 @@ public class ProfileMenu extends AppCompatActivity {
     }
 
     public void backToProfile(View myView) {
-        setContentView(R.layout.profile_menu);
+        setupProfileView();
     }
+
+
 
     /*public int getWins(Player user){
         return user.wins;
