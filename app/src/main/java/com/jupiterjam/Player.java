@@ -1,11 +1,18 @@
 package com.jupiterjam;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+
 public class Player {
     private int health = 100;
+    private final int maxHealth = 100;
     private ImageView spriteView; // The visual representation
     private ImageView bulletView; //The visual representation of the bullet
 
+    private ProgressBar healthBar;
     // Movement parameters
     private float tiltSensitivityX = 30f;
     private float maxHorizontalDistance = 300f;
@@ -40,11 +47,14 @@ public class Player {
     }
 
     // Constructor
-    public Player(ImageView spriteView, ImageView bulletView) {
+    public Player(ImageView spriteView, ImageView bulletView, ProgressBar playerHealthBar) {
         this.spriteView = spriteView;
         this.bulletView = bulletView;
         // Initialize smoothing flag (or could be done in a reset method)
         this.hasSmoothedXInitialized = false;
+
+        healthBar = playerHealthBar;
+        initializeHealthBar();
     }
 
     /**
@@ -115,6 +125,8 @@ public class Player {
 
     public void gotHit(){
         health -= 10;
+        healthBar.setProgress(health);
+        updateHealthBarColor();
         if(health <= 0){
             spriteView.setVisibility(View.INVISIBLE);
             if(deathListener != null){
@@ -123,5 +135,26 @@ public class Player {
         }
 
 
+    }
+    private void initializeHealthBar(){
+        healthBar.setMax(maxHealth);
+        healthBar.setProgress(health);
+        updateHealthBarColor();
+    }
+
+    private void updateHealthBarColor() {
+        int percentage = (health * 100) / maxHealth;
+
+        int color;
+        if (percentage > 60) {
+            color = Color.GREEN;
+        } else if (percentage > 30) {
+            color = Color.YELLOW;
+        } else {
+            color = Color.RED;
+        }
+
+        // Apply color to progress drawable
+        healthBar.setProgressTintList(ColorStateList.valueOf(color));
     }
 }

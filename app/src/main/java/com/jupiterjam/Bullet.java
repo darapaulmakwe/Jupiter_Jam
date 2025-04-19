@@ -21,8 +21,10 @@ public class Bullet {
         isBulletActive = true;
     }
     public void startMovement(){
-        spriteView.setX(xPosition);
+        int positionCorrection = 100;
+        spriteView.setX(xPosition + positionCorrection);
         spriteView.setY(yPosition);
+        System.out.println("X Position: " +xPosition + "Y Position: " + yPosition);
         spriteView.setVisibility(View.VISIBLE);
         handler.postDelayed(new Runnable() {
             @Override

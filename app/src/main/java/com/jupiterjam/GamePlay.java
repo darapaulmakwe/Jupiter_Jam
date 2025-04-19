@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import java.util.Random;
 public class GamePlay extends AppCompatActivity{
     // Define Player Object
     private Player player;
+    private ProgressBar healthProgressBar;
     private Enemy enemy;
 
     //Define Pause menu elements
@@ -119,7 +121,8 @@ public class GamePlay extends AppCompatActivity{
      int rocketResId = prefs.getInt("selectedTheme", R.drawable.jupiter_ship); // fallback default
      playerSprite.setImageResource(rocketResId);
      ImageView bulletSprite = findViewById(R.id.bullet);
-     createPlayer(playerSprite,bulletSprite);
+     healthProgressBar = findViewById(R.id.healthProgressBar);
+     createPlayer(playerSprite,bulletSprite, healthProgressBar);
      playerShooting(gameLayout);
 
 
@@ -393,10 +396,11 @@ public class GamePlay extends AppCompatActivity{
      * Initialize the player and links to bulletSpite
      * @param playerSprite Image view of the user sprite
      * @param bulletSprite Image view for the firing logic
+     * @param playerHealthBar Image view of the player health
      */
-    private void createPlayer(ImageView playerSprite, ImageView bulletSprite){
+    private void createPlayer(ImageView playerSprite, ImageView bulletSprite, ProgressBar playerHealthBar){
         bulletSprite.setVisibility(View.INVISIBLE);
-        player = new Player(playerSprite,bulletSprite);
+        player = new Player(playerSprite,bulletSprite, playerHealthBar);
     }
 
 
@@ -416,7 +420,7 @@ public class GamePlay extends AppCompatActivity{
                 bullet.setImageResource(R.drawable.laser_bullet);
 
                 int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        114, getResources().getDisplayMetrics());
+                        70, getResources().getDisplayMetrics());
                 //Layout parameters for the bullet
                 ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(size, size);
 
