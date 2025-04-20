@@ -36,6 +36,7 @@ public class GamePlay extends AppCompatActivity{
     private Player player;
     private ProgressBar healthProgressBar;
     private Enemy enemy;
+
     private ProgressBar enemyHealthProgressBar;
 
     //Define Pause menu elements
