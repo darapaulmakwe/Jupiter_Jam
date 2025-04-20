@@ -39,6 +39,7 @@
         android:layout_height="55dp"
         android:layout_marginTop="12dp"
         android:text="@string/tutorial"
+        android:onClick="openTutorial"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"

@@ -164,6 +164,9 @@ public class GamePlay extends AppCompatActivity{
      });
  }
 
+ private void initPauseMenu(){
+
+ }
     private void initPlayerSprite(ImageView playerSprite) {
         // Loads users theme preferences ie. spaceship/rocket style and sets it as the
         SharedPreferences prefs = getSharedPreferences("ThemePrefs", MODE_PRIVATE);

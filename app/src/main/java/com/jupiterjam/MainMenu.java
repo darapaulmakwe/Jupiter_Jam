@@ -28,6 +28,11 @@ public class MainMenu extends AppCompatActivity  {
         setContentView(R.layout.credits);
 
     }
+
+    public void openTutorial(View myView){
+        setContentView(R.layout.tutorial);
+
+    }
     public void revert(View myView){
         setContentView(R.layout.main_menu);
 
