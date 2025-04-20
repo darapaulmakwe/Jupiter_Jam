@@ -2,6 +2,7 @@ package com.jupiterjam;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -23,9 +24,7 @@ public class Player {
     private boolean hasSmoothedXInitialized = false;
     private static final float ALPHA = 0.15f; // Smoothing factor
 
-    public float getX(){
-        return spriteView.getX();
-
+    public float getX() { return spriteView.getX();
     }
     public float getY(){
         return spriteView.getY();
@@ -38,6 +37,10 @@ public class Player {
     }
 
     private PlayerDeathListener deathListener;
+
+    private boolean isFlameMode = false;
+    private boolean isBulletBoosted = false;
+
     public interface PlayerDeathListener{
         void playerDeath();
     }
@@ -96,7 +99,14 @@ public class Player {
         float xPos = spriteView.getX();
         float yPos = spriteView.getY();
 
-        Bullet bullet = new Bullet(bulletView, xPos, yPos,-20);
+        Bullet bullet;
+        // bullet speed determined by whether a power-up is active
+        if(isBulletBoosted){
+            bullet = new Bullet(bulletView, xPos, yPos, -50);
+        }
+        else{
+            bullet = new Bullet(bulletView, xPos, yPos, -20);
+        }
         bullet.startMovement();
         return bullet;
     }
@@ -124,7 +134,7 @@ public class Player {
     }
 
     public void gotHit(){
-        health -= 10;
+        health -= 5;
         healthBar.setProgress(health);
         updateHealthBarColor();
         if(health <= 0){
@@ -133,8 +143,6 @@ public class Player {
                 deathListener.playerDeath();
             }
         }
-
-
     }
     private void initializeHealthBar(){
         healthBar.setMax(maxHealth);
@@ -156,5 +164,50 @@ public class Player {
 
         // Apply color to progress drawable
         healthBar.setProgressTintList(ColorStateList.valueOf(color));
+    }
+    /**
+     *  Function to handle power-up from a health asteroid.
+     *  Heals the player for 30 and gives visual feedback on the healthbar
+     *  that the power-up activates.
+     */
+    public void heal(){
+        health += 30;
+        if (health > maxHealth) health = maxHealth;
+
+        // Apply highlight to show activation
+        healthBar.setBackgroundResource(R.drawable.healthbar_highlight);
+        // Remove it after a short delay
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                healthBar.setBackgroundResource(0); // Remove background
+            }
+        }, 1500);
+
+        healthBar.setProgress(health);
+        updateHealthBarColor();
+    }
+
+    public void activateFlameMode(){
+        Handler flameHandler = new Handler();
+        int flameDuration = 5000; // 5 seconds of activation
+        if(!isFlameMode){
+            isFlameMode = true;
+
+            flameHandler.postDelayed(() -> isFlameMode = false, flameDuration);
+        }
+    }
+
+    public boolean getFlameModeStatus(){
+        return isFlameMode;
+    }
+
+    public void activateBulletBoost() {
+        Handler boostHandler = new Handler();
+        int boostDuration = 5000; // 5 seconds
+        if (!isBulletBoosted) {
+            isBulletBoosted = true;
+            boostHandler.postDelayed(() -> isFlameMode = false, boostDuration);
+        }
     }
 }

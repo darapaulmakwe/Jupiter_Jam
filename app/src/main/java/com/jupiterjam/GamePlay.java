@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Random;
 
 public class GamePlay extends AppCompatActivity{
@@ -125,7 +126,7 @@ public class GamePlay extends AppCompatActivity{
      createPlayer(playerSprite,bulletSprite, healthProgressBar);
      playerShooting(gameLayout);
 
-
+     // Initialize asteroid tools
      asteroidLayout = (FrameLayout) findViewById(R.id.asteroidLayout);
      asteroids = new ArrayList<>();
      asteroidHandler = new Handler();
@@ -170,17 +171,24 @@ public class GamePlay extends AppCompatActivity{
         playerSprite.setImageResource(rocketResId);
     }
 
-    // Method to spawn new asteroids at random intervals
+    /**
+     * Method to spawn new asteroids at random intervals. Uses a runnable to create an asteroid
+     * and add it to the list of active asteroids.
+     * Also clears the active asteroids list of any destroyed asteroids.
+     */
     private void spawnAsteroids() {
         final int screenWidth = getResources().getDisplayMetrics().widthPixels;
         final int screenHeight = getResources().getDisplayMetrics().heightPixels;
+
+        int minSpawnTime = 1000; // 1000ms = 1 second
+        int maxSpawnTime = 3000; // 3000ms = 3 seconds
 
         // Runnable to spawn new asteroids every 1-3 seconds
         asteroidHandler.postDelayed(asteroidRunnable = new Runnable() {
             @Override
             public void run() {
                 // Create a new asteroid and add it to the layout
-                Asteroid newAsteroid = new Asteroid(asteroidLayout, screenWidth, screenHeight);
+                Asteroid newAsteroid = new Asteroid(asteroidLayout, screenWidth, screenHeight, player);
                 asteroids.add(newAsteroid);
 
                 // Clean up destroyed asteroids
@@ -191,9 +199,9 @@ public class GamePlay extends AppCompatActivity{
                     }
                 }
                 // Schedule the next asteroid spawn
-                asteroidHandler.postDelayed(this, random.nextInt(2000) + 1000); // Random interval (2 to 5 seconds)
+                asteroidHandler.postDelayed(this, random.nextInt(maxSpawnTime - minSpawnTime) + minSpawnTime); // Random interval (1 to 3 seconds)
             }
-        }, random.nextInt(2000) + 1000); // Initial delay (1 to 3 seconds)
+        }, random.nextInt(maxSpawnTime - minSpawnTime) + minSpawnTime); // Initial delay (1 to 3 seconds)
     }
 
     private void asteroidCollisionCheck(){
@@ -208,9 +216,15 @@ public class GamePlay extends AppCompatActivity{
             }}
     }
 
-    private void pauseAsteroidAnimation(){
-        for (int i = 0; i < asteroids.size(); i++) {
-            asteroids.get(i).pauseAsteroid();
+    private void handleAsteroidAnimation(String gameState){
+        if(Objects.equals(gameState, "pause")){
+            for (int i = 0; i < asteroids.size(); i++) {
+                asteroids.get(i).pauseAsteroid();
+            }
+        } else if (Objects.equals(gameState, "resume")) {
+            for (int i = 0; i < asteroids.size(); i++) {
+                asteroids.get(i).resumeAsteroid();
+            }
         }
     }
 
@@ -245,11 +259,10 @@ public class GamePlay extends AppCompatActivity{
         //The sensor manager uses the sensorEventListener to track any changes in the accelerometer
         mSensorManager.registerListener(sensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         enemyHandler.post(enemyRunnable);
-        asteroidHandler.post(asteroidRunnable);
-
-        pauseAsteroidAnimation();
-
         enemy.startShooting();
+
+        asteroidHandler.post(asteroidRunnable);
+        handleAsteroidAnimation("resume");
     }
 
     /**
@@ -273,10 +286,10 @@ public class GamePlay extends AppCompatActivity{
         super.onPause();
         mSensorManager.unregisterListener(sensorEventListener);
         enemyHandler.removeCallbacks(enemyRunnable);
+        enemy.stopShooting();
 
         asteroidHandler.removeCallbacks(asteroidRunnable);
-        pauseAsteroidAnimation();
-        enemy.stopShooting();
+        handleAsteroidAnimation("pause");
     }
 
     /**
@@ -314,7 +327,6 @@ public class GamePlay extends AppCompatActivity{
      * @param enemySprite Image view of the enemy
      * @param gameLayout layout where the enemy will appear.
      */
-
     private void enemyCreate(ImageView enemySprite, ConstraintLayout gameLayout){
         switch (difficulty){
             case "beginner":
@@ -390,7 +402,7 @@ public class GamePlay extends AppCompatActivity{
         while(iterator.hasNext()){
             Bullet bullet = iterator.next();
             if(bullet.hitTarget(enemy.getX(), enemy.getY(),enemy.getHeight(),enemy.getWidth())){
-                enemy.gotHit();
+                enemy.gotHit(player.getFlameModeStatus());
                 bullet.stopBullet();
                 iterator.remove();
                 break;
@@ -424,7 +436,15 @@ public class GamePlay extends AppCompatActivity{
             public void onClick(View v) {
                 ImageView bullet = new ImageView(GamePlay.this);
                 bullet.setVisibility(View.INVISIBLE);
-                bullet.setImageResource(R.drawable.laser_bullet);
+
+                // bullets turn blue to indicate flame power-up has been activated
+                if(player.getFlameModeStatus()){
+                    bullet.setImageResource(R.drawable.flame_bullet);
+                }
+                else{
+                    bullet.setImageResource(R.drawable.laser_bullet);
+                }
+
 
                 int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                         70, getResources().getDisplayMetrics());
@@ -511,7 +531,7 @@ public class GamePlay extends AppCompatActivity{
         enemyHandler.removeCallbacks(enemyRunnable);
 
         asteroidHandler.removeCallbacks(asteroidRunnable);
-        pauseAsteroidAnimation();
+        handleAsteroidAnimation("pause");
         // Pauses enemy shooting
         enemy.stopShooting();
     }

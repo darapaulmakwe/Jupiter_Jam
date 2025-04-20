@@ -184,8 +184,14 @@ public class Enemy {
 
     }
 
-    public void gotHit(){
-        health -= 10;
+    public void gotHit(boolean isFlameMode){
+        // more damage taken as a result of the damage boost from flame mode
+        if(isFlameMode){
+            health -= 20;
+        }
+        else{
+            health -= 10;
+        }
 
         if(health <= 0){
             spriteView.setVisibility(View.INVISIBLE);

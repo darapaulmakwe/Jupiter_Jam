@@ -26,24 +26,34 @@ public class Asteroid {
     private boolean isPowerUp;
     private int powerUp;
 
-    public Asteroid(FrameLayout gameLayout, int screenWidth, int screenHeight) {
+    private Player player;
+
+    public Asteroid(FrameLayout gameLayout, int startX, int screenHeight,Player player) {
 
         this.asteroidLayout = gameLayout;
         this.context = gameLayout.getContext();
+        this.player = player;
 
-        // Set initial random position for the asteroid
-        int startX = screenWidth; // Start off-screen (right side)
-        int endX = -width;
+        // Create the ImageView for the asteroid
+        createAsteroid();
 
-        int minY = 600; // accounting for player and cpu area
-        int maxY = screenHeight - minY;
+        setAsteroidLayout(startX, screenHeight);
 
-        int startY = new Random().nextInt(maxY-minY+1) + minY;
+        animateAsteroid(startX);
+    }
 
+    /**
+     *  Creates ImageView for the asteroid, determines if it is a power-up or not and
+     *  sets the asteroid image and health accordingly.
+     *
+     *  Whether an asteroid is a power-up or not is determined by a randomly generated number
+     *  and the odds in which an asteroid has to be a power-up.
+     */
+    private void createAsteroid(){
         // Create the ImageView for the asteroid
         asteroidView = new ImageView(context);
 
-        int chanceOfPowerUp = 10; // 10% chance to be a power-up asteroid
+        int chanceOfPowerUp = 5; // 10% chance to be a power-up asteroid
         isPowerUp = new Random().nextInt(chanceOfPowerUp) == 0;
 
         // Set image and health based on type
@@ -62,12 +72,23 @@ public class Asteroid {
                     asteroidView.setImageResource(R.drawable.health_asteroid);
                     break;
             }
-            health = 3;
+            health = 1;
         }
         else {
             asteroidView.setImageResource(R.drawable.plain_asteroid);
             health = 1;
         }
+    }
+
+    /**
+     *
+     * @param startX
+     * @param screenHeight
+     */
+    private void setAsteroidLayout(int startX, int screenHeight){
+        int minY = 600; // accounting for player and cpu area
+        int maxY = screenHeight - minY;
+        int startY = new Random().nextInt(maxY-minY+1) + minY;
 
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(width, height);
         asteroidView.setLayoutParams(params);
@@ -76,7 +97,10 @@ public class Asteroid {
 
         // Add to layout
         asteroidLayout.addView(asteroidView);
+    }
 
+    private void animateAsteroid(int startX) {
+        int endX = -width; // end at left side of screen
         int minDuration = 5000;
         int maxDuration = 12000;
         // Random speed: 5 to 12 seconds to cross the screen
@@ -111,7 +135,6 @@ public class Asteroid {
 
         animator.start();
     }
-
     public void takeDamage(int damage) {
         if (isDestroyed) return;
 
@@ -133,11 +156,11 @@ public class Asteroid {
         return x >= left && x <= right && y >= top && y <= bottom;
     }
 
-    /* Cancels asteroid animation and removes the image from layout. ie destroys the asteroid.
-    ** Handles android explosion animation, and triggering a power up for the player if applicable
-    */
+    /** Cancels asteroid animation and removes the image from layout. ie destroys the asteroid.
+     *  Handles android explosion animation, and triggering a power up for the player if applicable
+     */
     public void destroy(boolean wasKilledByPlayer){
-        if (isDestroyed) return;
+        if (isDestroyed) return; // triggers asteroid removal in GamePlay class
 
         isDestroyed = true;
         if (animator != null && animator.isRunning()) animator.cancel();
@@ -175,19 +198,18 @@ public class Asteroid {
     private void triggerPowerUp(int powerUp) {
         switch(powerUp){
             case 0:
-                // TODO: ability function for bullet asteroid
+                // speeds bullets up
+                player.activateBulletBoost();
             case 1:
-                // TODO: ability function for flame asteroid
+                // gives player a damage boost
+                player.activateFlameMode();
             case 2:
-                // TODO: ability function for health asteroid
+                // heals player for 30
+                player.heal();
         }
     }
 
     public boolean isDestroyed() {
         return isDestroyed;
-    }
-
-    public ImageView getAsteroidView() {
-        return asteroidView;
     }
 }
