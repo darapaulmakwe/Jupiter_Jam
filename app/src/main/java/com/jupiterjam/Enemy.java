@@ -1,4 +1,6 @@
 package com.jupiterjam;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.media.Image;
 import android.os.Handler;
 import android.util.Log;
@@ -6,16 +8,17 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.Random;
 public class Enemy {
     private int health = 100;
-
+    private final int maxHealth = 100;
     private ImageView spriteView;
     private ImageView bulletView;
     private ViewGroup parentLayout;
-
+    private ProgressBar healthBar;
     // for movement speed directions etc
     private float movementSpeed = 20f;
     private float maxHorizontal = 600f;
@@ -69,7 +72,7 @@ public class Enemy {
     private BulletRegisterCallback bulletRegisterCallback;
 
     public Enemy(ImageView spriteView, ViewGroup bulletView, float maxHorizontal, float minHorizontal,
-                 float movementSpeed, int health, int timeBetweenShots){
+                 float movementSpeed, int health, int timeBetweenShots, ProgressBar enemyHealthBar){
         this.spriteView = spriteView;
         this.maxHorizontal = maxHorizontal;
         this.minHorizontal = minHorizontal;
@@ -77,8 +80,8 @@ public class Enemy {
         this.movementSpeed = movementSpeed;
         this.health = health;
         this.timeBetweenShots = timeBetweenShots;
-
-
+        healthBar = enemyHealthBar;
+        initializeHealthBar();
     }
     public void setBulletRegisterCallback(BulletRegisterCallback callback){
         this.bulletRegisterCallback = callback;
@@ -192,7 +195,8 @@ public class Enemy {
         else{
             health -= 10;
         }
-
+        healthBar.setProgress(health);
+        updateHealthBarColor();
         if(health <= 0){
             spriteView.setVisibility(View.INVISIBLE);
             isShooting = false;
@@ -201,5 +205,26 @@ public class Enemy {
             }
         }
 
+    }
+    private void initializeHealthBar(){
+        healthBar.setMax(maxHealth);
+        healthBar.setProgress(health);
+        updateHealthBarColor();
+    }
+
+    private void updateHealthBarColor() {
+        int percentage = (health * 100) / maxHealth;
+
+        int color;
+        if (percentage > 60) {
+            color = Color.GREEN;
+        } else if (percentage > 30) {
+            color = Color.YELLOW;
+        } else {
+            color = Color.RED;
+        }
+
+        // Apply color to progress drawable
+        healthBar.setProgressTintList(ColorStateList.valueOf(color));
     }
 }

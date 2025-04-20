@@ -12,7 +12,7 @@ public class Player {
     private final int maxHealth = 100;
     private ImageView spriteView; // The visual representation
     private ImageView bulletView; //The visual representation of the bullet
-
+    private boolean isShooting = false;
     private ProgressBar healthBar;
     // Movement parameters
     private float tiltSensitivityX = 30f;

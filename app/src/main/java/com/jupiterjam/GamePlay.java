@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -35,10 +36,11 @@ public class GamePlay extends AppCompatActivity{
     private Player player;
     private ProgressBar healthProgressBar;
     private Enemy enemy;
+    private ProgressBar enemyHealthProgressBar;
 
     //Define Pause menu elements
-    private boolean isPaused = false;
-    private boolean isGameActive = false;
+    public boolean isPaused = false;
+    public boolean isGameActive = false;
     ImageView pauseMenu;
     ImageButton pauseBtn;
     TextView pauseMenuText;
@@ -102,6 +104,10 @@ public class GamePlay extends AppCompatActivity{
      super.onCreate(savedInstanceState);
      setContentView(R.layout.gameplay);
 
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+        );
      difficulty = getIntent().getStringExtra("difficulty");
 
      // Initialize countdown
@@ -137,7 +143,8 @@ public class GamePlay extends AppCompatActivity{
 
      // create enemy sprite and call functions to start game loop
      ImageView enemySprite = findViewById(R.id.enemy);
-     enemyCreate(enemySprite,gameLayout);
+     enemyHealthProgressBar = findViewById(R.id.enemyHealthProgressBar);
+     enemyCreate(enemySprite,gameLayout, enemyHealthProgressBar);
      enemyRunnable();
      playerDeathListener();
      enemyHandler.post(enemyRunnable);
@@ -232,6 +239,7 @@ public class GamePlay extends AppCompatActivity{
     }
 
     public void startCountdownTimer() {
+        isGameActive = false;
         pauseBtn.setEnabled(false);
          countdownTimer = new CountDownTimer(4000, 1000) {
 
@@ -249,6 +257,7 @@ public class GamePlay extends AppCompatActivity{
                 countdownTint.setVisibility(View.GONE);
                 pauseBtn.setEnabled(true);
                 resumeGamePlay();
+                isGameActive = true;
             }
         };countdownTimer.start();
     }
@@ -263,6 +272,7 @@ public class GamePlay extends AppCompatActivity{
         mSensorManager.registerListener(sensorEventListener, mAccelerometer, SensorManager.SENSOR_DELAY_GAME);
         enemyHandler.post(enemyRunnable);
         enemy.startShooting();
+//        player.startShooting();
 
         asteroidHandler.post(asteroidRunnable);
         handleAsteroidAnimation("resume");
@@ -290,7 +300,7 @@ public class GamePlay extends AppCompatActivity{
         mSensorManager.unregisterListener(sensorEventListener);
         enemyHandler.removeCallbacks(enemyRunnable);
         enemy.stopShooting();
-
+//        player.stopShooting();
         asteroidHandler.removeCallbacks(asteroidRunnable);
         handleAsteroidAnimation("pause");
     }
@@ -330,21 +340,21 @@ public class GamePlay extends AppCompatActivity{
      * @param enemySprite Image view of the enemy
      * @param gameLayout layout where the enemy will appear.
      */
-    private void enemyCreate(ImageView enemySprite, ConstraintLayout gameLayout){
+    private void enemyCreate(ImageView enemySprite, ConstraintLayout gameLayout, ProgressBar healthBar){
         switch (difficulty){
             case "beginner":
                 enemy = new Enemy(enemySprite,gameLayout,400f, -300f,
-                        20f,100,2000);
+                        20f,100,2000, healthBar);
                 break;
 
             case "medium":
                 enemy = new Enemy(enemySprite,gameLayout, 400f, -300f,
-                        30f,150,1000);
+                        30f,150,1000, healthBar);
                 break;
 
             case "hard":
                 enemy = new Enemy(enemySprite, gameLayout, 400f,  -300f,
-                        50f, 200, 500);
+                        50f, 200, 500, healthBar);
                 break;
             }
 
@@ -423,6 +433,7 @@ public class GamePlay extends AppCompatActivity{
     private void createPlayer(ImageView playerSprite, ImageView bulletSprite, ProgressBar playerHealthBar){
         bulletSprite.setVisibility(View.INVISIBLE);
         player = new Player(playerSprite,bulletSprite, playerHealthBar);
+//        player.startShooting();
     }
 
 
@@ -437,37 +448,39 @@ public class GamePlay extends AppCompatActivity{
 
             @Override
             public void onClick(View v) {
-                ImageView bullet = new ImageView(GamePlay.this);
-                bullet.setVisibility(View.INVISIBLE);
+                if (isGameActive && !isPaused) {
+                    ImageView bullet = new ImageView(GamePlay.this);
+                    bullet.setVisibility(View.INVISIBLE);
 
-                // bullets turn blue to indicate flame power-up has been activated
-                if(player.getFlameModeStatus()){
-                    bullet.setImageResource(R.drawable.flame_bullet);
+                    // bullets turn blue to indicate flame power-up has been activated
+                    if(player.getFlameModeStatus()){
+                        bullet.setImageResource(R.drawable.flame_bullet);
+                    }
+                    else{
+                        bullet.setImageResource(R.drawable.laser_bullet);
+                    }
+
+
+                    int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                            70, getResources().getDisplayMetrics());
+                    //Layout parameters for the bullet
+                    ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(size, size);
+
+                    //Sets constraints
+                    layoutParams.bottomToBottom = R.id.asteroidLayout;
+                    layoutParams.topToTop = R.id.asteroidLayout;
+                    layoutParams.startToStart = R.id.asteroidLayout;
+                    layoutParams.horizontalBias = 0.498f;
+
+                    // Apply to image view
+                    bullet.setLayoutParams(layoutParams);
+
+                    // Apply to the layout
+                    gameLayout.addView(bullet);
+                    player.setBulletView(bullet);
+                    Bullet newBullet = player.shoot();
+                    playerBullets.add(newBullet);
                 }
-                else{
-                    bullet.setImageResource(R.drawable.laser_bullet);
-                }
-
-
-                int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                        70, getResources().getDisplayMetrics());
-                //Layout parameters for the bullet
-                ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(size, size);
-
-                //Sets constraints
-                layoutParams.bottomToBottom = R.id.asteroidLayout;
-                layoutParams.topToTop = R.id.asteroidLayout;
-                layoutParams.startToStart = R.id.asteroidLayout;
-                layoutParams.horizontalBias = 0.498f;
-
-                // Apply to image view
-                bullet.setLayoutParams(layoutParams);
-
-                // Apply to the layout
-                gameLayout.addView(bullet);
-                player.setBulletView(bullet);
-                Bullet newBullet = player.shoot();
-                playerBullets.add(newBullet);
             }
         });
     }
@@ -537,6 +550,7 @@ public class GamePlay extends AppCompatActivity{
         handleAsteroidAnimation("pause");
         // Pauses enemy shooting
         enemy.stopShooting();
+//        player.stopShooting();
     }
 
 }
