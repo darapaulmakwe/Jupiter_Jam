@@ -56,6 +56,7 @@ public class ProfileMenu extends AppCompatActivity {
 
     private void setupThemeSelection() {
         themeImage = findViewById(R.id.ship);
+        currentTheme = findViewById(R.id.currentTheme);
 
         // Set up listeners to change the users desired rocket theme based on what button is pressed
         findViewById(R.id.themeButton1).setOnClickListener(v -> changeTheme(R.drawable.jupiter_ship, "Jupiter"));
@@ -64,6 +65,12 @@ public class ProfileMenu extends AppCompatActivity {
         findViewById(R.id.themeButton4).setOnClickListener(v -> changeTheme(R.drawable.neptune_ship, "Neptune"));
         findViewById(R.id.themeButton5).setOnClickListener(v -> changeTheme(R.drawable.saturn_ship, "Saturn"));
         findViewById(R.id.themeButton6).setOnClickListener(v -> changeTheme(R.drawable.moon_ship, "Moon"));
+
+        // Load saved theme
+        int savedThemeDrawable = userThemePrefs.getInt("selectedTheme", R.drawable.jupiter_ship);
+        String savedThemeName = userThemePrefs.getString("selectedThemeName", "Jupiter");
+        themeImage.setImageResource(savedThemeDrawable);
+        currentTheme.setText(savedThemeName);
     }
 
     private void changeTheme(int themeDrawable, String name) {
@@ -77,6 +84,7 @@ public class ProfileMenu extends AppCompatActivity {
         // Save to users SharedPreferences
         SharedPreferences.Editor editor = userThemePrefs.edit();
         editor.putInt("selectedTheme", themeDrawable);
+        editor.putString("selectedThemeName", name);
         editor.apply();
     }
 
