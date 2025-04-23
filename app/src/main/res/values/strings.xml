@@ -9,8 +9,6 @@
     <string name="hard">Hard</string>
     <string name="name_hint">Player Name</string>
     <string name="theme_button">Theme</string>
-    <string name="player_wins">Wins: </string>
-    <string name="player_loses">Loses: </string>
     <string name="back_button">BACK</string>
     <string name="moon">Moon</string>
     <string name="saturn">Saturn</string>

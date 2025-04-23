@@ -1,56 +1,54 @@
 package com.jupiterjam;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class EndGame extends AppCompatActivity {
 
+    private ImageView shipResult;
+    private SharedPreferences prefs;
+    private TextView gameResult;
+    private TextView statCount;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.end_game);
 
-        //Get results
+        prefs = getSharedPreferences("PlayerPrefs", MODE_PRIVATE);
         Intent intent = getIntent();
-        boolean Win = intent.getBooleanExtra("result", false);
-        int enemiesDefeated = intent.getIntExtra("enemies Defeated:", 0);// optional
 
-        TextView gameResult = findViewById(R.id.gameResult);
-        TextView statCount = findViewById(R.id.statCount);
-
-        if (Win){
-            gameResult.setText(R.string.you_won);
-            statCount.setText("Enemies Defeated : " + enemiesDefeated);
-        }
-        else {
-            gameResult.setText(R.string.game_over);
-            statCount.setText("You Lose");
-        }
-
+        // Game result via boolean passed from GamePlay class.
+        boolean playerWon = intent.getBooleanExtra("result", false);
+        displayEndScreenResults(playerWon);
     }
 
-    public void endGame(boolean result){
-
-        TextView gameResult;
-        TextView statCount;
+    private void displayEndScreenResults(boolean playerWon) {
         gameResult = findViewById(R.id.gameResult);
         statCount = findViewById(R.id.statCount);
+        shipResult = findViewById(R.id.shipResult);
 
-        if(result){
+        if (playerWon){
             gameResult.setText(R.string.you_won);
-            //player.addWin(); TODO: method in player class to add a win to players stats
-            //statCount.setText("Wins " + player.wins);
-            //shipResult.setImage(player.customization.getThemeImage());
+            int wins = prefs.getInt("wins", 0);
+            statCount.setText("Enemies Defeated : " + wins);
+
+            // Display players current ship
+            int rocketResId = prefs.getInt("selectedTheme", R.drawable.jupiter_ship);
+            shipResult.setImageResource(rocketResId);
+
         }
         else {
             gameResult.setText(R.string.game_over);
-            //player.addLoss(); TODO: method in player class to add a loss to players stats
-            //statCount.setText("Loses " + player.loses);
-            //shipResult.setImage(explosion image);
+            statCount.setText("Your ship exploded!");
+            shipResult.setImageResource(R.drawable.explosion);
         }
     }
 

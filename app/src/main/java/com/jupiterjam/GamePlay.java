@@ -11,16 +11,13 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -56,10 +53,6 @@ public class GamePlay extends AppCompatActivity{
     ImageView countdownTint;
     TextView countdownText;
 
-    // end game elements
-    ImageView endGame;
-    public Button restartButton;
-
     //Define sensor variables
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
@@ -72,15 +65,14 @@ public class GamePlay extends AppCompatActivity{
     private ArrayList<Asteroid> asteroids; // List to hold active asteroids
     private Handler asteroidHandler; // Handler for timing and updates
     private Runnable asteroidRunnable;
-    private Random random;
-    private ArrayList<Bullet> enemyBullets = new ArrayList<>();
 
+    // Define active player and enemy bullet lists
+    private ArrayList<Bullet> enemyBullets = new ArrayList<>();
     private ArrayList<Bullet> playerBullets = new ArrayList<>();
 
-
-    // difficulty get
-
     private String difficulty;
+    private Random random;
+    public SharedPreferences prefs;
 
 
     private SensorEventListener sensorEventListener = new SensorEventListener() {
@@ -172,14 +164,18 @@ public class GamePlay extends AppCompatActivity{
              resumeGame();
          }
      });
- }
+    }
 
- private void initPauseMenu(){
-
- }
+    /**
+     * Method to handle initializing the players chosen theme. Loads the users shared preferences
+     * and sets the theme. If no theme has been previously chosen it will default to the jupiter-ship
+     * model. Sets the ImageView that will be used throughout gameplay to represent the player.
+     *
+     * @param playerSprite : ImageView for the players avatar to be displayed in.
+     */
     private void initPlayerSprite(ImageView playerSprite) {
-        // Loads users theme preferences ie. spaceship/rocket style and sets it as the
-        SharedPreferences prefs = getSharedPreferences("ThemePrefs", MODE_PRIVATE);
+        // Getting Player preferences for theme
+        SharedPreferences prefs = getSharedPreferences("PlayerPrefs", MODE_PRIVATE);
         int rocketResId = prefs.getInt("selectedTheme", R.drawable.jupiter_ship); // fallback default
         playerSprite.setImageResource(rocketResId);
     }
@@ -187,7 +183,7 @@ public class GamePlay extends AppCompatActivity{
     /**
      * Method to spawn new asteroids at random intervals. Uses a runnable to create an asteroid
      * and add it to the list of active asteroids.
-     * Also clears the active asteroids list of any destroyed asteroids.
+     * Calls method to clear the active asteroids list of any destroyed asteroids.
      */
     private void spawnAsteroids() {
         final int screenWidth = getResources().getDisplayMetrics().widthPixels;
@@ -204,7 +200,8 @@ public class GamePlay extends AppCompatActivity{
                 Asteroid newAsteroid = new Asteroid(asteroidLayout, screenWidth, screenHeight, player);
                 asteroids.add(newAsteroid);
 
-                // Clean up destroyed asteroids
+                //Iterates through Asteroid ArrayList removing any marked as being destroyed by
+                //boolean characteristic in Asteroid class.
                 for (int i = 0; i < asteroids.size(); i++) {
                     if (asteroids.get(i).isDestroyed()) {
                         asteroids.remove(i);
@@ -212,11 +209,18 @@ public class GamePlay extends AppCompatActivity{
                     }
                 }
                 // Schedule the next asteroid spawn
-                asteroidHandler.postDelayed(this, random.nextInt(maxSpawnTime - minSpawnTime) + minSpawnTime); // Random interval (1 to 3 seconds)
+                asteroidHandler.postDelayed(this,
+                        random.nextInt(maxSpawnTime - minSpawnTime) + minSpawnTime); // Random interval (1 to 3 seconds)
             }
         }, random.nextInt(maxSpawnTime - minSpawnTime) + minSpawnTime); // Initial delay (1 to 3 seconds)
     }
 
+    /**
+     * Actively checks if any active bullets have entered any active asteroids hitbox. Uses a method from the asteroid class for
+     * hit detection, and another to determine if the asteroid is already "destroyed" and just not removed from the list yet.
+     * If the Asteroid is not already destroyed and the bullet is detected in the boundaries of the asteroid, the asteroid
+     * takes damage from the player.
+     */
     private void asteroidCollisionCheck(){
         for (int i = 0; i < playerBullets.size(); i++) {
             Bullet bullet = playerBullets.get(i);
@@ -229,6 +233,10 @@ public class GamePlay extends AppCompatActivity{
             }}
     }
 
+    /**
+     * Function to pause or resume animators controlling the list of current asteroids.
+     * @param gameState : String representing "pause" or "resume"
+     */
     private void handleAsteroidAnimation(String gameState){
         if(Objects.equals(gameState, "pause")){
             for (int i = 0; i < asteroids.size(); i++) {
@@ -359,7 +367,7 @@ public class GamePlay extends AppCompatActivity{
                 enemy = new Enemy(enemySprite, gameLayout, 400f,  -300f,
                         50f, 200, 500, healthBar);
                 break;
-            }
+        }
 
         enemy.setPlayer(player);
         enemy.setBulletRegisterCallback(new Enemy.BulletRegisterCallback() {
@@ -371,10 +379,11 @@ public class GamePlay extends AppCompatActivity{
         enemy.setEnemyDeathListener(new Enemy.EnemyDeathListener() {
             @Override
             public void enemyDeath() {
+                updateStat("wins");
                 endGame();
-                Intent intent= new  Intent(GamePlay.this, EndGame.class);
+
+                Intent intent = new  Intent(GamePlay.this, EndGame.class);
                 intent.putExtra("result", true);
-                intent.putExtra("enemies Defeated", 0);
                 startActivity(intent);
                 finish();
             }
@@ -422,7 +431,6 @@ public class GamePlay extends AppCompatActivity{
                 bullet.stopBullet();
                 iterator.remove();
                 break;
-
             }
         }
     }
@@ -460,11 +468,11 @@ public class GamePlay extends AppCompatActivity{
                         bullet.setVisibility(View.INVISIBLE);
 
                         // bullets turn blue to indicate flame power-up has been activated
-                        if(player.getFlameModeStatus()){
-                            bullet.setImageResource(R.drawable.flame_bullet);
+                        if(!player.getFlameModeStatus()){
+                            bullet.setImageResource(R.drawable.laser_bullet);
                         }
                         else{
-                            bullet.setImageResource(R.drawable.laser_bullet);
+                            bullet.setImageResource(R.drawable.flame_bullet);
                         }
 
 
@@ -500,10 +508,11 @@ public class GamePlay extends AppCompatActivity{
         player.setPlayerDeathListener(new Player.PlayerDeathListener() {
             @Override
             public void playerDeath() {
+                updateStat("deaths");
                 endGame();
+
                 Intent intent = new Intent(GamePlay.this, EndGame.class);
                 intent.putExtra("result", false);
-                intent.putExtra("enemies Defeated", 0);
                 startActivity(intent);
                 finish();
             }
@@ -561,4 +570,16 @@ public class GamePlay extends AppCompatActivity{
 //        player.stopShooting();
     }
 
+    /**
+     * From SharedPreferences gets the current value of the stat being updated and
+     * re-saves an incremented value for that stat.
+     * @param result : String that decides what stat is being updated (wins, deaths)
+     */
+    public void updateStat(String result){
+        // Getting Player preferences for stats
+        prefs = getSharedPreferences("PlayerPrefs", MODE_PRIVATE);
+        int currentStat = prefs.getInt(result, 0); // Default to 0 if not found
+        // Increment and save
+        prefs.edit().putInt(result, currentStat + 1).apply();
+    }
 }

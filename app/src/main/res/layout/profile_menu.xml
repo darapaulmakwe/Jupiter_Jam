@@ -7,6 +7,7 @@
     android:background="@drawable/profile_bg"
     tools:context=".ProfileMenu">
 
+    <!-- EditText : Username Entry Field -->
     <EditText
         android:id="@+id/usernameInput"
         android:layout_width="206dp"
@@ -23,8 +24,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Layout buttons -->
-
+    <!-- Layout button : Theme Menu -->
     <Button
         android:id="@+id/themeButton"
         android:layout_width="206dp"
@@ -36,8 +36,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernameInput" />
 
-    <!-- TextViews -->
-
+    <!-- TextViews : Stat Display -->
     <TextView
         android:id="@+id/playerWins"
         android:layout_width="206dp"
@@ -46,7 +45,7 @@
         android:background="#644E9E"
         android:fadingEdge="vertical"
         android:gravity="center"
-        android:text="@string/player_wins"
+        android:text=""
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
         android:textColor="#FFFFFF"
@@ -56,13 +55,13 @@
         app:layout_constraintTop_toBottomOf="@+id/themeButton" />
 
     <TextView
-        android:id="@+id/playerLoses"
+        android:id="@+id/playerDeaths"
         android:layout_width="206dp"
         android:layout_height="55dp"
         android:layout_marginTop="12dp"
         android:background="#644E9E"
         android:gravity="center"
-        android:text="@string/player_loses"
+        android:text=""
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
         android:textColor="#FFFFFF"
@@ -71,7 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playerWins" />
 
-    <!-- Back button -->
+    <!-- Back button : (Return to Main Menu) -->
     <ImageButton
         android:id="@+id/revertButton"
         android:layout_width="wrap_content"
