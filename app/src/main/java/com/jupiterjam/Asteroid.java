@@ -234,12 +234,15 @@ public class Asteroid {
             case 0:
                 // speeds bullets up
                 player.activateBulletBoost();
+                break;
             case 1:
                 // gives player a damage boost
                 player.activateFlameMode();
+                break;
             case 2:
                 // heals player for 30
                 player.heal();
+                break;
         }
     }
 
