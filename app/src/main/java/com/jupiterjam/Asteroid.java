@@ -249,4 +249,8 @@ public class Asteroid {
     public boolean isDestroyed() {
         return isDestroyed;
     }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
 }
