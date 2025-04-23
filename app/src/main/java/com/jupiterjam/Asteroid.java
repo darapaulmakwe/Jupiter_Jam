@@ -14,11 +14,12 @@ public class Asteroid {
 
     private ImageView asteroidView; // The visual representation
     private ObjectAnimator animator;
-    private FrameLayout asteroidLayout;
+    private FrameLayout asteroidLayout; // Layout to display Arraylist of active asteroids
     private Context context;
 
+    // Dimensions of the asteroid
     public int width = 225;
-    public int height = 163; // Dimensions of the asteroid
+    public int height = 163;
 
     private int health;
     private boolean isDestroyed = false;
@@ -28,13 +29,20 @@ public class Asteroid {
 
     private Player player;
 
+    /**
+     * Constructor for asteroid object.
+     * @param gameLayout : frame layout for asteroid to be applied to
+     * @param startX : screenWidth of device to be used for animation start point and asteroid
+     *                 frameLayout parameters
+     * @param screenHeight : screen height of device to be used for frameLayout parameters
+     * @param player : player initialized in gamePlay class used to apply power-ups to the player mid-game
+     */
     public Asteroid(FrameLayout gameLayout, int startX, int screenHeight,Player player) {
 
         this.asteroidLayout = gameLayout;
         this.context = gameLayout.getContext();
         this.player = player;
 
-        // Create the ImageView for the asteroid
         createAsteroid();
 
         setAsteroidLayout(startX, screenHeight);
@@ -53,7 +61,7 @@ public class Asteroid {
         // Create the ImageView for the asteroid
         asteroidView = new ImageView(context);
 
-        int chanceOfPowerUp = 5; // 10% chance to be a power-up asteroid
+        int chanceOfPowerUp = 7; // 1/7 chance to be a power-up asteroid
         isPowerUp = new Random().nextInt(chanceOfPowerUp) == 0;
 
         // Set image and health based on type
@@ -72,18 +80,18 @@ public class Asteroid {
                     asteroidView.setImageResource(R.drawable.health_asteroid);
                     break;
             }
-            health = 1;
         }
         else {
             asteroidView.setImageResource(R.drawable.plain_asteroid);
-            health = 1;
         }
+        health = 1;
     }
 
     /**
-     *
-     * @param startX
-     * @param screenHeight
+     * Sets up asteroid ImageView and where it sits on the FrameLayout.
+     * @param startX : x position of Asteroid ImageView on FrameLayout.
+     * @param screenHeight : Height of the screen used to determine constraints of what y values the asteroid
+     *                       can spawn at.
      */
     private void setAsteroidLayout(int startX, int screenHeight){
         int minY = 600; // accounting for player and cpu area
@@ -99,6 +107,11 @@ public class Asteroid {
         asteroidLayout.addView(asteroidView);
     }
 
+    /**
+     * Method animates the Asteroid horizontally across the screen from right to left, for a random duration in a bound.
+     * Adds Rotation animation and handles all situations the animation can run into.
+     * @param startX
+     */
     private void animateAsteroid(int startX) {
         int endX = -width; // end at left side of screen
         int minDuration = 5000;
@@ -135,6 +148,12 @@ public class Asteroid {
 
         animator.start();
     }
+
+    /**
+     * Removes a given int amount from the Asteroids health. If the damage is more than the remaining
+     * health asteroid destruction is triggered.
+     * @param damage : int amount of damage to take.
+     */
     public void takeDamage(int damage) {
         if (isDestroyed) return;
 
@@ -144,8 +163,13 @@ public class Asteroid {
         }
     }
 
-    // Hitbox detection to determine if the asteroid is hit.
-    // Checks if bullet has entered the asteroids position.
+    /**
+     * Hitbox detection to determine if the asteroid is hit.
+     * Checks if an object has entered the asteroids position using the boundaries
+     * of the asteroids ImageView and the objects x and y position.
+     * @param x : x position of object hitting asteroid
+     * @param y : y position of object hitting asteroid
+     */
     public boolean isHit(float x, float y) {
 
         float left = asteroidView.getX();
@@ -156,8 +180,10 @@ public class Asteroid {
         return x >= left && x <= right && y >= top && y <= bottom;
     }
 
-    /** Cancels asteroid animation and removes the image from layout. ie destroys the asteroid.
-     *  Handles android explosion animation, and triggering a power up for the player if applicable
+    /**
+     * Cancels asteroid animation and removes the image from layout. ie destroys the asteroid.
+     * Handles triggering asteroid explosion animation, and triggering a power up for the player
+     * if applicable
      */
     public void destroy(boolean wasKilledByPlayer){
         if (isDestroyed) return; // triggers asteroid removal in GamePlay class
@@ -165,13 +191,17 @@ public class Asteroid {
         isDestroyed = true;
         if (animator != null && animator.isRunning()) animator.cancel();
 
-        explode();
+        explode(); // includes removal from layout
 
         if (wasKilledByPlayer && isPowerUp) {
             triggerPowerUp(powerUp);
         }
     }
-    // Display explosion and remove the view after a delay
+
+    /**
+     * Display an explosion image in place of the asteroid being destroyed and remove the view
+     * after a delay.
+     */
     private void explode(){
         int asteroidRemoveDelay = 1000;
         asteroidView.setImageResource(R.drawable.explosion);
@@ -187,6 +217,7 @@ public class Asteroid {
             }
         }, asteroidRemoveDelay);
     }
+
     public void pauseAsteroid(){
         animator.pause();
     }
@@ -194,7 +225,10 @@ public class Asteroid {
         animator.resume();
     }
 
-    // Functionality of each power up to be applied.
+    /**
+     * Calls corresponding Player method to activate a power-up.
+     * @param powerUp : random number generated when the asteroid was created.
+     */
     private void triggerPowerUp(int powerUp) {
         switch(powerUp){
             case 0:
