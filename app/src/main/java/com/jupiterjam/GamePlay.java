@@ -34,6 +34,8 @@ import java.util.Random;
 public class GamePlay extends AppCompatActivity{
     // Define Player Object
     private Player player;
+    private long lastShotTime = 0;
+    private final long shootDelay = 500;
     private ProgressBar healthProgressBar;
     private Enemy enemy;
 
@@ -450,37 +452,42 @@ public class GamePlay extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 if (isGameActive && !isPaused) {
-                    ImageView bullet = new ImageView(GamePlay.this);
-                    bullet.setVisibility(View.INVISIBLE);
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - lastShotTime >= shootDelay){
+                        lastShotTime = currentTime; //update the time of last shot
 
-                    // bullets turn blue to indicate flame power-up has been activated
-                    if(player.getFlameModeStatus()){
-                        bullet.setImageResource(R.drawable.flame_bullet);
+                        ImageView bullet = new ImageView(GamePlay.this);
+                        bullet.setVisibility(View.INVISIBLE);
+
+                        // bullets turn blue to indicate flame power-up has been activated
+                        if(player.getFlameModeStatus()){
+                            bullet.setImageResource(R.drawable.flame_bullet);
+                        }
+                        else{
+                            bullet.setImageResource(R.drawable.laser_bullet);
+                        }
+
+
+                        int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                                70, getResources().getDisplayMetrics());
+                        //Layout parameters for the bullet
+                        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(size, size);
+
+                        //Sets constraints
+                        layoutParams.bottomToBottom = R.id.asteroidLayout;
+                        layoutParams.topToTop = R.id.asteroidLayout;
+                        layoutParams.startToStart = R.id.asteroidLayout;
+                        layoutParams.horizontalBias = 0.498f;
+
+                        // Apply to image view
+                        bullet.setLayoutParams(layoutParams);
+
+                        // Apply to the layout
+                        gameLayout.addView(bullet);
+                        player.setBulletView(bullet);
+                        Bullet newBullet = player.shoot();
+                        playerBullets.add(newBullet);
                     }
-                    else{
-                        bullet.setImageResource(R.drawable.laser_bullet);
-                    }
-
-
-                    int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                            70, getResources().getDisplayMetrics());
-                    //Layout parameters for the bullet
-                    ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(size, size);
-
-                    //Sets constraints
-                    layoutParams.bottomToBottom = R.id.asteroidLayout;
-                    layoutParams.topToTop = R.id.asteroidLayout;
-                    layoutParams.startToStart = R.id.asteroidLayout;
-                    layoutParams.horizontalBias = 0.498f;
-
-                    // Apply to image view
-                    bullet.setLayoutParams(layoutParams);
-
-                    // Apply to the layout
-                    gameLayout.addView(bullet);
-                    player.setBulletView(bullet);
-                    Bullet newBullet = player.shoot();
-                    playerBullets.add(newBullet);
                 }
             }
         });
