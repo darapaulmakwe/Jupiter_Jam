@@ -189,9 +189,14 @@ public class Asteroid {
         if (isDestroyed) return; // triggers asteroid removal in GamePlay class
 
         isDestroyed = true;
-        if (animator != null && animator.isRunning()) animator.cancel();
+        if (animator != null && animator.isRunning()) {animator.cancel();}
 
-        explode(); // includes removal from layout
+        if (wasKilledByPlayer) {
+            explode(); // includes removal from layout
+        }
+        else{
+            asteroidLayout.removeView(asteroidView);
+        }
 
         if (wasKilledByPlayer && isPowerUp) {
             triggerPowerUp(powerUp);

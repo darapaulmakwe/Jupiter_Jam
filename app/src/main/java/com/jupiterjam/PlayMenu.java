@@ -13,6 +13,7 @@ public class PlayMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.play_menu);
+
     }
 
     public void revert(View myView){

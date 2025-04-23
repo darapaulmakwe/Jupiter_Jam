@@ -260,7 +260,7 @@ public class GamePlay extends AppCompatActivity{
                 } else {
                     countdownText.setText(String.valueOf(millisUntilFinished / 1000));
                 }
-                onPause();
+                pauseGamePlay();
             }
 
             public void onFinish() {
@@ -302,18 +302,25 @@ public class GamePlay extends AppCompatActivity{
         }
     }
 
-    /**
-     * Pauses all active game logic like sensor updates/ player movement, enemy behavior,
-     * asteroid spawning
-     */
-    protected void onPause() {
-        super.onPause();
+    // This method handles the Android lifecycle and pause Logic
+    private void pauseGamePlay() {
         mSensorManager.unregisterListener(sensorEventListener);
         enemyHandler.removeCallbacks(enemyRunnable);
         enemy.stopShooting();
 //        player.stopShooting();
         asteroidHandler.removeCallbacks(asteroidRunnable);
         handleAsteroidAnimation("pause");
+    }
+
+    /**
+     * Pauses all active game logic like sensor updates/ player movement, enemy behavior,
+     * asteroid spawning
+     */
+    protected void onPause() {
+        super.onPause();
+        if (isPaused && !isGameActive ) {
+            pauseGamePlay();
+        }
     }
 
     /**
@@ -337,6 +344,7 @@ public class GamePlay extends AppCompatActivity{
         pauseMenuText.setVisibility(View.VISIBLE);
         onPause();
         isPaused = true;
+        pauseGamePlay();
     }
 
     public void revertToMainMenu(View myView){

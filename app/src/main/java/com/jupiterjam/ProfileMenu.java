@@ -22,6 +22,7 @@ public class ProfileMenu extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupProfileView();
+
     }
 
     /**
