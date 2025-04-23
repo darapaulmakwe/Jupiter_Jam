@@ -188,6 +188,11 @@ public class Player {
         updateHealthBarColor();
     }
 
+    /**
+     * Activates FlameMode power-up that gives a damage boost to a player against enemies.
+     * Damage boost is applied in Enemy class, triggered when the enemy takes damage.
+     * Sets flame mode status to false after a delay to end the power-up.
+     */
     public void activateFlameMode(){
         Handler flameHandler = new Handler();
         int flameDuration = 5000; // 5 seconds of activation
@@ -202,12 +207,18 @@ public class Player {
         return isFlameMode;
     }
 
+    /**
+     * Activates a power-up which gives the players bullets a faster rate at which they move
+     * up the screen. Active while isBulletBoosted is true, sets to false after a duration.
+     * Bullet speed boost applied in shoot().
+     */
     public void activateBulletBoost() {
         Handler boostHandler = new Handler();
         int boostDuration = 5000; // 5 seconds
         if (!isBulletBoosted) {
             isBulletBoosted = true;
-            boostHandler.postDelayed(() -> isFlameMode = false, boostDuration);
+
+            boostHandler.postDelayed(() -> isBulletBoosted = false, boostDuration);
         }
     }
 }
