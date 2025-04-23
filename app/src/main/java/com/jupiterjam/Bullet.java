@@ -105,5 +105,9 @@ public class Bullet {
     public ImageView getSpriteView(){
         return spriteView;
     }
+
+    public float getSpeed(){
+        return bulletSpeed;
+    }
 }
 
