@@ -12,6 +12,12 @@ import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+
+/**
+ * Enemy class that handles the movement, shooting bullets, taking damage
+ * tracking the player, and creating a health bar.
+ */
 public class Enemy {
     private int health = 100;
     private final int maxHealth = 100;
@@ -34,6 +40,11 @@ public class Enemy {
     private long lastTimeTracked = 0;
     private long timeUntilNextTrack = 3000;
     private Player player;
+
+    /**
+     * reference for tracking player
+     * @param player object to track
+     */
     public void setPlayer(Player player){
         this.player = player;
     }
@@ -45,7 +56,7 @@ public class Enemy {
     private ArrayList<Bullet> enemyBullets = new ArrayList<>();
 
 
-    // easier and faster access to dimensions of ship
+    // easier and faster access to dimensions of ship and position
     public float getX(){
         return spriteView.getX();
     }
@@ -63,13 +74,32 @@ public class Enemy {
     public interface EnemyDeathListener{
         void enemyDeath();
     }
+
+    /**
+     * Sets a listener that is triggered when the enemy dies
+     * @param listener  the callback that executed on the death
+     */
     public void setEnemyDeathListener(EnemyDeathListener listener){
         this.deathListener = listener;
     }
+
+    // tracks for fired bullets
     public interface BulletRegisterCallback{
         void enemyBullet(Bullet bullet);
     }
     private BulletRegisterCallback bulletRegisterCallback;
+
+    /**
+     * Constructor off the enemy with its attributes and initializes the health bar
+     * @param spriteView visual of the enemy
+     * @param bulletView layout for bullet to be added to
+     * @param maxHorizontal the max movement to the right
+     * @param minHorizontal the max movement to the left
+     * @param movementSpeed speed that the enemy movement
+     * @param health players amount of health
+     * @param timeBetweenShots amount of time between each shot taken
+     * @param enemyHealthBar progress bar showing enemy health
+     */
 
     public Enemy(ImageView spriteView, ViewGroup bulletView, float maxHorizontal, float minHorizontal,
                  float movementSpeed, int health, int timeBetweenShots, ProgressBar enemyHealthBar){
@@ -83,16 +113,30 @@ public class Enemy {
         healthBar = enemyHealthBar;
         initializeHealthBar();
     }
+
+    /**
+     * sets a callback for tracking the bullets the enemy fired
+     * @param callback receives the bullet reference
+     */
     public void setBulletRegisterCallback(BulletRegisterCallback callback){
         this.bulletRegisterCallback = callback;
     }
+
+    /**
+     * Called every so often to update and move the enemy
+     */
 
     public void updateEnemyPosition(){
         move();
         }
 
 // sources i used to help with tracking the player
-    //https://www.baeldung.com/java-ternary-operator, and https://www.w3schools.com/java/java_conditions_shorthand.asp
+//https://www.baeldung.com/java-ternary-operator, and https://www.w3schools.com/java/java_conditions_shorthand.asp
+
+    /**
+     * Movement of the enemy, used random direction changes
+     * and tracks the player once and a while
+     */
     private void move() {
         long currentTime =  System.currentTimeMillis();
         if((currentTime - lastDirectionChange) > timeUntilNextChange){
@@ -106,7 +150,7 @@ public class Enemy {
         }
 
 
-
+        // tracking
         if((currentTime - lastTimeTracked ) > timeUntilNextTrack && player!= null){
             float enemyX = spriteView.getTranslationX(); // get the direction of the enemy
             float playerX = player.getX();
@@ -120,7 +164,7 @@ public class Enemy {
             timeUntilNextTrack = 500 + random.nextInt(800);
         }
 
-
+        // movement and limits
         float currentX = spriteView.getTranslationX();
         float newX = currentX + (direction * movementSpeed);
 
@@ -136,6 +180,9 @@ public class Enemy {
 
     }
 
+    /**
+     * Starts the shooting and sets bullet creation
+     */
     public void startShooting(){
         if(!isShooting){
             isShooting = true;
@@ -144,6 +191,9 @@ public class Enemy {
 
     }
 
+    /**
+     * loop that shoots the bullets
+     */
     private Runnable startBullet = new Runnable() {
         @Override
         public void run() {
@@ -155,12 +205,18 @@ public class Enemy {
 
     };
 
+    /**
+     * stops shooting and stops creation
+     */
     public void stopShooting(){
         isShooting=false;
         bulletHandler.removeCallbacks(startBullet);
     }
 
-
+    /**
+     * Fires bullets and registers it
+     * @return object that was fired
+     */
     private Bullet shoot(){
         float xPos = spriteView.getX();
         float yPos = spriteView.getY() + spriteView.getHeight();
@@ -187,6 +243,10 @@ public class Enemy {
 
     }
 
+    /**
+     * Called when enemy is hit. Applies damage and checks for death
+     * @param isFlameMode power up that if true takes additional damage
+     */
     public void gotHit(boolean isFlameMode){
         // more damage taken as a result of the damage boost from flame mode
         if(isFlameMode){
@@ -195,6 +255,8 @@ public class Enemy {
         else{
             health -= 10;
         }
+
+
         healthBar.setProgress(health);
         updateHealthBarColor();
         if(health <= 0){
@@ -206,11 +268,19 @@ public class Enemy {
         }
 
     }
+
+    /**
+     * Health bar and current health and sets color
+     */
     private void initializeHealthBar(){
         healthBar.setMax(maxHealth);
         healthBar.setProgress(health);
         updateHealthBarColor();
     }
+
+    /**
+     * updates the color bar based on the health percentage
+     */
 
     private void updateHealthBarColor() {
         int percentage = (health * 100) / maxHealth;

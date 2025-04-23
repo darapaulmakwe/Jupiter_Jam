@@ -3,6 +3,12 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 
+
+/**
+ * Bullet class, used for handling the movement, collision detection
+ * and visibility.
+ */
+
 public class Bullet {
     private ImageView spriteView; // The visual representation
     private float xPosition;
@@ -10,9 +16,17 @@ public class Bullet {
     private boolean isBulletActive = false;
     private float bulletSpeed = 20;
     private final int frameRate = 60;
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(); // Handler to manage bullet movement timing
 
     //Constructor
+
+    /**
+     * Constructor for Bullet object, sets speed and visibility
+     * @param spriteView image view representing the bullet
+     * @param xPosition the starting x position of the bullet
+     * @param yPosition the starting y position of the bullet
+     * @param bulletSpeed speed of the bullet
+     */
     public Bullet(ImageView spriteView, float xPosition, float yPosition, float bulletSpeed){
         this.spriteView = spriteView;
         this.xPosition = xPosition;
@@ -20,8 +34,14 @@ public class Bullet {
         this.bulletSpeed = bulletSpeed;
         isBulletActive = true;
     }
+
+    /**
+     * Starts the bullets movement. it posts a timed loop
+     * moves the bullet every frame based on the bullet speed and checks
+     * to see if the bullet is off screen
+     */
     public void startMovement(){
-        int positionCorrection = 100;
+        int positionCorrection = 100;  // optional
         spriteView.setX(xPosition + positionCorrection);
         spriteView.setY(yPosition);
         System.out.println("X Position: " +xPosition + "Y Position: " + yPosition);
@@ -47,11 +67,24 @@ public class Bullet {
             }
         }, 1000 / frameRate); // Initial delay
     }
+
+    /**
+     * Stops the bullets movement and hides it.
+     * Used for when a bullet goes off the screen or hits a target
+     */
     public void stopBullet(){
         isBulletActive = false;
         spriteView.setVisibility(ImageView.GONE);
     }
 
+    /**
+     * Checks to see if a bullet hits the target
+     * @param positionX   X position of the target
+     * @param positionY   Y position of the target
+     * @param targetHeight Height of the target
+     * @param targetWidth Width of the target
+     * @return it will return true if the bullet is overlapping with the target
+     */
     public boolean hitTarget(float positionX, float positionY, float targetHeight, float targetWidth){
         float bulletX = spriteView.getX();
         float bulletY = spriteView.getY();
@@ -65,6 +98,7 @@ public class Bullet {
 
     }
 
+    // getters methods for the bullet and sprite
     public float getxPosition(){ return xPosition; }
     public float getyPosition(){ return yPosition; }
 
