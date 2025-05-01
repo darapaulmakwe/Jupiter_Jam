@@ -1,4 +1,4 @@
-# AUCSC220_Group6W25
+# Jupiter Jam
 
 # Team Members
 # Ajibade Ebunoluwa
