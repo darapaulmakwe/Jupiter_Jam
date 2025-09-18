@@ -24,6 +24,9 @@ Embark on an intergalactic battle, powered by tilt-based controls and strategic 
 
 <li>Version Control: Git, GitHub</li>
 
+<h2>Things to improve</h2>
+<li>The MVP structore could be better but we're working on it!</li>
+
 <h2>How to Run the Project Locally</h2>
 
 <h3>Prerequisites</h3>
